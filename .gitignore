@@ -362,9 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-#Migrations folder
-ProjektDyplomowy/DAL/Migrations/
-ProjektDyplomowy/Migrations/
-
 #Libraries folder
 ProjektDyplomowy/wwwroot/lib/
