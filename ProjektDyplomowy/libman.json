@@ -16,5 +16,15 @@
         "flatly/bootstrap.min.css"
       ]
     }
+  ,
+{
+  "provider": "jsdelivr",
+  "library": "vue@2.6.14",
+  "destination": "wwwroot/lib/vue/",
+  "files": [
+    "dist/vue.js",
+    "dist/vue.min.js"
   ]
+}
+]
 }
