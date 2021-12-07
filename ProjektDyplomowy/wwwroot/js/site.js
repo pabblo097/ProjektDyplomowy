@@ -8,6 +8,8 @@
 //THEME TOGGLER=============================================
 const darkTheme = document.querySelector("#darkTheme");
 const lightTheme = document.querySelector("#lightTheme");
+const darkThemeOver = document.querySelector("#darkThemeOver");
+const lightThemeOver = document.querySelector("#lightThemeOver");
 
 // function to toggle between light and dark theme
 function toggleTheme() {
@@ -32,11 +34,19 @@ function toggleTheme() {
 function setTheme(theme) {
     if (theme === "theme-dark") {
         darkTheme.rel = 'stylesheet';
+        darkThemeOver.rel = "stylesheet";
+
         lightTheme.rel = 'alternate stylesheet';
+        lightThemeOver.rel = 'alternate stylesheet';
+
         localStorage.setItem("theme", theme);
     } else {
         darkTheme.rel = 'alternate stylesheet';
+        darkThemeOver.rel = 'alternate stylesheet';
+
         lightTheme.rel = 'stylesheet';
+        lightThemeOver.rel = 'stylesheet';
+
         localStorage.setItem("theme", theme);
     }
 }

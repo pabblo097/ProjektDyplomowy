@@ -4,8 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjektDyplomowy</title>
+    @* dark mode theme *@
     <link rel="stylesheet" href="~/lib/bootswatch/darkly/bootstrap.min.css" id="darkTheme" />
+    <link rel="stylesheet" href="~/css/darklyOverwrite.css" id="darkThemeOver" />
+    @* light mode theme *@
     <link rel="stylesheet alternate" href="~/lib/bootswatch/flatly/bootstrap.min.css" id="lightTheme" />
+    <link rel="stylesheet alternate" href="~/css/flatlyOverwrite.css" id="lightThemeOver" />
+    @* default styles *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProjektDyplomowy.styles.css" asp-append-version="true" />
 </head>
@@ -21,12 +26,13 @@
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" asp-controller="Home" asp-action="Index">
-                                Home
-                            </a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Strona główna</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">Prywatność</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Posts" asp-action="Add">Dodaj</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -55,7 +61,6 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    @*<script src="~/js/switch.js"></script>*@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
