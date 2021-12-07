@@ -141,6 +141,33 @@ namespace ProjektDyplomowy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("3a68ccb4-4829-4cae-986f-f6bdce215331"),
+                            Name = "Zwierzęta"
+                        },
+                        new
+                        {
+                            Id = new Guid("4210f47a-45f7-4cf6-afc7-bb5f217095f6"),
+                            Name = "Humor"
+                        },
+                        new
+                        {
+                            Id = new Guid("58e9b937-cd1e-4fa2-a72f-b17db44e848d"),
+                            Name = "Ciekawostki"
+                        },
+                        new
+                        {
+                            Id = new Guid("1bf0ab72-c36a-4fe7-b520-0b50be6495c9"),
+                            Name = "Polityka"
+                        },
+                        new
+                        {
+                            Id = new Guid("71cdcc66-6bc9-43c7-a87e-31c8848fce67"),
+                            Name = "Informatyka"
+                        });
                 });
 
             modelBuilder.Entity("ProjektDyplomowy.Entities.Comment", b =>
@@ -182,14 +209,14 @@ namespace ProjektDyplomowy.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte[]>("Content")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<int>("ContentType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LikesQuantity")
                         .HasColumnType("int");
