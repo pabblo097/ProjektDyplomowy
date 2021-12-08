@@ -89,3 +89,20 @@ input:checked + .slider:before {
     .slider.round:before {
         border-radius: 50%;
     }
+
+#descriptionTextarea {
+    height: 200px;
+}
+
+.tags-input-wrapper-default {
+    background-color: #414141 !important;
+    border: 1px solid #222 !important;
+}
+
+    .tags-input-wrapper-default > input {
+        color: #fff !important;
+    }
+
+        .tags-input-wrapper-default > input::placeholder {
+            color: #fff !important;
+        }

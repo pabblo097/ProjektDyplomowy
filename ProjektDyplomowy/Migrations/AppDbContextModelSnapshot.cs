@@ -221,6 +221,9 @@ namespace ProjektDyplomowy.Migrations
                     b.Property<int>("LikesQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("SourceType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 

@@ -11,6 +11,7 @@
     <link rel="stylesheet alternate" href="~/lib/bootswatch/flatly/bootstrap.min.css" id="lightTheme" />
     <link rel="stylesheet alternate" href="~/css/flatlyOverwrite.css" id="lightThemeOver" />
     @* default styles *@
+    @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProjektDyplomowy.styles.css" asp-append-version="true" />
 </head>
@@ -26,7 +27,7 @@
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Strona główna</a>
+                            <a class="nav-link" asp-controller="Posts" asp-action="Index">Strona główna</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Privacy">Prywatność</a>
@@ -48,7 +49,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container px-2">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -61,7 +62,8 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://kit.fontawesome.com/35cbf2d03a.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

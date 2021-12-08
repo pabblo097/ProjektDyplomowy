@@ -39,7 +39,7 @@ builder.Services.AddScoped<IPostsRepository, PostsRepository>();
 
 var app = builder.Build();
 
-//Seed basic data
+//Seed roles and admin
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

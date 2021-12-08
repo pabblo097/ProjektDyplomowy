@@ -1,9 +1,11 @@
-﻿namespace ProjektDyplomowy.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProjektDyplomowy.Entities
 {
     public enum ContentType
     {
-        Image,
-        Gif,
-        Video
+        [Display(Name = "Zdjęcie/Gif")]
+        ZdjecieGif,
+        Wideo
     }
 }

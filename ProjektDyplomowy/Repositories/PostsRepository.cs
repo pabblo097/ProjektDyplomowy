@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektDyplomowy.DAL;
 using ProjektDyplomowy.Entities;
+using System.Text.RegularExpressions;
 
 namespace ProjektDyplomowy.Repositories
 {
     public class PostsRepository : BaseRepository<Post>, IPostsRepository
     {
         private readonly IMapper mapper;
+        private readonly IWebHostEnvironment hostEnvironment;
 
-        public PostsRepository(AppDbContext context, IMapper mapper) : base(context)
+        public PostsRepository(AppDbContext context, IMapper mapper, IWebHostEnvironment hostEnvironment) : base(context)
         {
             this.mapper = mapper;
+            this.hostEnvironment = hostEnvironment;
         }
 
         public Task<List<Post>> GetAllPostsAsync()
@@ -38,7 +41,21 @@ namespace ProjektDyplomowy.Repositories
 
         public async Task<List<SelectListItem>> FillCategoriesSelectListAsync()
         {
-            return mapper.Map<List<SelectListItem>>(await context.Categories.ToListAsync());
+            var categories = await context.Categories.OrderBy(o => o.Name).ToListAsync();
+
+            return mapper.Map<List<SelectListItem>>(categories);
+        }
+
+        public string UploadFile(IFormFile file, string title)
+        {
+            var fileName = Path.GetFileName(file.FileName);
+            var uniqueFileName = $"{Regex.Replace(title, @"\s+", "")}_{Guid.NewGuid().ToString().Substring(0, 8)}{Path.GetExtension(fileName)}";
+
+            var uploads = Path.Combine(hostEnvironment.WebRootPath, "uploads");
+            var filePath = Path.Combine(uploads, uniqueFileName);
+            file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+            return uniqueFileName;
         }
     }
 }

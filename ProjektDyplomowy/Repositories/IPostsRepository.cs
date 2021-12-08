@@ -8,5 +8,6 @@ namespace ProjektDyplomowy.Repositories
         Task<List<Post>> GetAllPostsAsync();
         Task<Post> GetPostByIdAsync(Guid id);
         Task<List<SelectListItem>> FillCategoriesSelectListAsync();
+        string UploadFile(IFormFile file, string title);
     }
 }

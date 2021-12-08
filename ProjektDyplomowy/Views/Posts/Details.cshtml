@@ -1,0 +1,44 @@
+﻿@model PostsDetailsViewModel
+@using ProjektDyplomowy.Entities
+@using System.IO
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<p>Id: @Model.Id</p>
+<p>Tytuł: @Model.Title</p>
+<p>Opis: @Model.Text</p>
+<p>Nazwa użytkownia: @Model.Username</p>
+<p>Id uzytkownia: @Model.UserId</p>
+<p>Nazwa kategorii: @Model.CategoryName</p>
+<p>Id kategorii: @Model.CategoryId</p>
+<p>Typ zzawartości: @Model.ContentType.ToString()</p>
+<p>
+    Tagi: @foreach (var tag in Model.Tags)
+    {
+        @tag.Name;
+    }
+</p>
+<p>Zawartość:</p>
+@if (Model.ContentType == ContentType.Wideo)
+{
+    if (Model.SourceType == SourceType.Local)
+    {
+        <video src="~/uploads/@Model.FileName" controls></video>
+    }
+    else
+    {
+        <iframe src="@Model.FileName" class="w-100" allowfullscreen></iframe>
+    }
+}
+else
+{
+    if (Model.SourceType == SourceType.Local)
+    {
+        <img src="~/uploads/@Model.FileName" class="img-fluid" />
+    }
+    else
+    {
+        <img src="@Model.FileName" class="img-fluid" />
+    }
+}

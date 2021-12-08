@@ -1,0 +1,17 @@
+﻿@model List<PostsIndexViewModel>
+@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<table class="table">
+    @foreach (var post in Model)
+    {
+        <tr>
+            <td>
+                <a asp-controller="Posts" asp-action="Details" asp-route-postId="@post.Id">
+                    @post.Title
+                </a>
+            </td>
+        </tr>
+    }
+</table>

@@ -17,7 +17,7 @@ namespace ProjektDyplomowy.Repositories
             return (await context.SaveChangesAsync()) > 0;
         }
 
-        public async Task<bool> RemoveAsync(T entity)
+        public virtual async Task<bool> RemoveAsync(T entity)
         {
             context.Remove(entity);
             return (await context.SaveChangesAsync()) > 0;

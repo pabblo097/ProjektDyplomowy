@@ -15,16 +15,27 @@
         "flatly/bootstrap.css",
         "flatly/bootstrap.min.css"
       ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "vue@2.6.14",
+      "destination": "wwwroot/lib/vue/",
+      "files": [
+        "dist/vue.js",
+        "dist/vue.min.js"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "@voerro/vue-tagsinput@2.7.1",
+      "destination": "wwwroot/lib/voerro/vue-tagsinput/",
+      "files": [
+        "dist/style.css",
+        "dist/style.min.css",
+        "dist/voerro-vue-tagsinput.js",
+        "dist/voerro-vue-tagsinput.js.map",
+        "dist/voerro-vue-tagsinput.min.js"
+      ]
     }
-  ,
-{
-  "provider": "jsdelivr",
-  "library": "vue@2.6.14",
-  "destination": "wwwroot/lib/vue/",
-  "files": [
-    "dist/vue.js",
-    "dist/vue.min.js"
   ]
-}
-]
 }

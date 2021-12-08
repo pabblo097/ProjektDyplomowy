@@ -1,0 +1,219 @@
+﻿@model PostsAddViewModel
+@using ProjektDyplomowy.Entities
+@{
+    ViewData["Title"] = "Dodaj";
+}
+
+@section Styles{
+    <link href="~/lib/voerro/vue-tagsinput/dist/style.min.css" rel="stylesheet" />
+}
+
+<div id="app">
+    <form method="post" asp-controller="Posts" asp-action="Add" enctype="multipart/form-data">
+        <h2 class="text-center">Dodaj post w kilku prostych krokach!</h2>
+        <h4 class="text-center mt-4">W jaki sposób chcesz dodać pliki?</h4>
+
+        @* przyciski od rodzaju źrodła *@
+        <div class="d-flex gap-3 flex-nowrap justify-content-center my-3">
+
+            <button type="button" id="fileLocal"
+                    class="btn btn-primary col-5 col-md-3 d-flex flex-column align-items-center shadow-none"
+                    v-on:click="changeFileSource(1)" v-bind:class="{'border-success': fileSource==1}">
+                <i class="fas fa-desktop fs-1 my-2 p-0"></i>
+                <span>Pliki lokalne</span>
+            </button>
+
+            <button type="button" id="webUrl"
+                    class="btn btn-primary col-5 col-md-3 d-flex flex-column align-items-center shadow-none"
+                    v-on:click="changeFileSource(2)" v-bind:class="{'border-success': fileSource==2}">
+                <i class="fas fa-globe fs-1 my-2 p-0"></i>
+                <span>Adres URL</span>
+            </button>
+        </div>
+
+        @* przyciski od rodaju tresci; pojawia sie po wybraniu żrodła tresci *@
+        <div v-if="fileSource!=0">
+            <h4 class="text-center mt-4">Jaki rodzaj treści chcesz dodać?</h4>
+
+            <div class="d-flex gap-3 flex-nowrap justify-content-center my-3">
+                <button type="button" id="imggif"
+                        class="btn btn-primary col-5 col-md-3 d-flex flex-column align-items-center shadow-none"
+                        v-on:click="changeFileType(1)" v-bind:class="{'border-success': fileType==1}">
+                    <i class="fas fa-images fs-1 my-2 p-0"></i>
+                    <span>Zdjęcie/GIF</span>
+                </button>
+
+                <button type="button" id="video"
+                        class="btn btn-primary col-5 col-md-3 d-flex flex-column align-items-center shadow-none"
+                        v-on:click="changeFileType(2)" v-bind:class="{'border-success': fileType==2}">
+                    <i class="fas fa-film fs-1 my-2 p-0"></i>
+                    <span>Wideo</span>
+                </button>
+            </div>
+        </div>
+
+
+        <input type="hidden" asp-for="FileSource" id="fileSourceInput" :value="fileSource" />
+        <input type="hidden" asp-for="FileType" id="fileTypeInput" :value="fileType" />
+
+        @* formularz; pojawia sie po wybraniu rodzaju tresci *@
+        <div class="d-flex justify-content-center mt-5" v-if="fileType!=0">
+            <div class="card col-12 col-md-8">
+                <div class="card-header">
+                    <h4 class="text-center my-2">Wypełnij poniższe pola.</h4>
+                </div>
+                <div class="card-body">
+                    @* pole tytul *@
+                    <div class="form-group my-3">
+                        <div class="form-floating">
+                            <input class="form-control" placeholder="Title" id="floatingTextareaTitle" asp-for="Title" />
+                            <label for="floatingTextareaTitle" asp-for="Title"></label>
+                        </div>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    @* pole opis *@
+                    <div class="form-group my-3">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="descriptionTextarea" placeholder="Text"
+                                      asp-for="Text" v-model="descValue" maxlength="500"></textarea>
+                            <label for="floatingTextareaText" asp-for="Text"></label>
+                        </div>
+                        <span class="text-end d-block w-100">{{charCounter}}/500</span>
+                        <span asp-validation-for="Text" class="text-danger"></span>
+                    </div>
+
+                    @* pole kategoria *@
+                    <div class="form-group my-3">
+                        <div class="form-floating">
+                            <select class="form-control" placeholder="CategoryId" id="floatingTextareaCategoryId" asp-for="CategoryId" asp-items="Model.SelectCategories"></select>
+                            <label for="floatingTextareaCategoryId" asp-for="CategoryId"></label>
+                        </div>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    @* pole tagi *@
+                    <div class="form-group my-3">
+                        <tags-input placeholder="Dodaj tag (opcjonalnie)" element-id="Tags"
+                                    add-tags-on-space="true" value-fields="value"></tags-input>
+                    </div>
+
+                    @* pole dla (rodzaju zrodla == pliki lokalne); rozni sie w zaleznosci od rodzaju tresci *@
+                    <div v-if="fileSource==1" class="form-group my-3">
+                        <div class="input-group">
+                            <input v-if="fileType==1" type="file" class="form-control" asp-for="File"
+                                   accept="image/*" v-on:change="filePreview" />
+
+                            <input v-if="fileType==2" type="file" class="form-control" asp-for="File"
+                                   accept="video/*" v-on:change="filePreview" />
+                        </div>
+                        <span asp-validation-for="File" class="text-danger"></span>
+                        <span class="text-danger mb-3">@Html.ValidationMessage("EmptyFileInput")</span>
+                        <span class="text-danger mb-3">@Html.ValidationMessage("NotImage")</span>
+                        <span class="text-danger mb-3">@Html.ValidationMessage("NotVideo")</span>
+                    </div>
+
+                    @* pole dla (rodzaj zrodla == adresurl) *@
+                    <div v-if="fileSource==2" class="form-group my-3">
+                        <div class="form-floating">
+                            <input class="form-control" placeholder="FileUrl" asp-for="FileUrl"
+                                   v-on:change="urlPreview" />
+                            <label for="floatingTextareaFileUrl" asp-for="FileUrl"></label>
+                        </div>
+                        <span asp-validation-for="FileUrl" class="text-danger"></span>
+                        <span class="text-danger mb-3">@Html.ValidationMessage("EmptyFileUrlInput")</span>
+                    </div>
+
+                    <div class="form-group my-3 text-center" id="filePreview">
+
+                    </div>
+
+                    <div class="form-group">
+                        <button id="add" type="submit" class="btn btn-primary py-2 px-4">
+                            <span class="mr-3"><i class="fas fa-plus"></i></span>
+                            Dodaj
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/vue/dist/vue.min.js"></script>
+    <script src="~/lib/voerro/vue-tagsinput/dist/voerro-vue-tagsinput.min.js"></script>
+    <script>
+        $(window).resize(updateHeight);
+
+        function updateHeight() {
+            var div = $('iframe');
+            var width = div.width();
+
+            div.css('height', width * 0.5225);
+        }
+    </script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data: {
+                fileSource: $("#fileSourceInput").val(),
+                fileType: $("#fileTypeInput").val(),
+                descValue: "",
+                imgTypes: ['image/gif', 'image/jpeg', 'image/png'],
+                videoTypes: ["video/mp4", "video/webm", "video/ogg"],
+            },
+            methods: {
+                changeFileType: function (value) {
+                    this.fileType = value;
+                    let tmp = this.fileSource;
+                    this.fileSource = 3;
+                    this.fileSource = tmp;
+                    $("#filePreview").html("");
+                },
+                changeFileSource: function (value) {
+                    this.fileSource = value;
+                    $("#filePreview").html("");
+                },
+                filePreview: function (event) {
+                    $("#filePreview").html("");
+                    let file = event.target.files[0];
+                    if (file == null) {
+                        return;
+                    }
+                    let fileNode;
+                    let fileUrl = URL.createObjectURL(file);
+                    if (this.imgTypes.includes(file.type)) {
+                        fileNode = $(`<img src="${fileUrl}" class="img-fluid"><img/>`);
+                    } else if (this.videoTypes.includes(file.type)) {
+                        fileNode = $(`<video src="${fileUrl}" class="w-100" controls><video/>`);
+                    } else {
+                        return;
+                    }
+
+                    $("#filePreview").append(fileNode);
+                },
+                urlPreview: function (event) {
+                    $("#filePreview").html("");
+                    let url = event.target.value;
+                    if (this.fileType == 2) {
+                        let iframe = $(`<iframe src="${url}" class="w-100"><iframe/>`);
+                        $("#filePreview").append(iframe);
+                        updateHeight();
+                    } else if (this.fileType == 1) {
+                        fileNode = $(`<img src="${url}" class="img-fluid"><img/>`);
+                        $("#filePreview").append(fileNode);
+                    }
+
+                }
+            },
+            computed: {
+                charCounter: function () {
+                    return this.descValue.length;
+                }
+            },
+            components: { "tags-input": VoerroTagsInput }
+        })
+    </script>
+
+}
