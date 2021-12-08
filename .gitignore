@@ -368,3 +368,6 @@ ProjektDyplomowy/wwwroot/lib/
 #Migration folder
 ProjektDyplomowy/Migrations
 ProjektDyplomowy/DAL/Migrations
+
+#Uploads folder
+ProjektDyplomowy/wwwroot/uploads/
