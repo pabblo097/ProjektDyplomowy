@@ -4,13 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjektDyplomowy</title>
-    @* dark mode theme *@
+
     <link rel="stylesheet" href="~/lib/bootswatch/darkly/bootstrap.min.css" id="darkTheme" />
-    <link rel="stylesheet" href="~/css/darklyOverwrite.css" id="darkThemeOver" />
-    @* light mode theme *@
-    <link rel="stylesheet alternate" href="~/lib/bootswatch/flatly/bootstrap.min.css" id="lightTheme" />
-    <link rel="stylesheet alternate" href="~/css/flatlyOverwrite.css" id="lightThemeOver" />
-    @* default styles *@
     @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProjektDyplomowy.styles.css" asp-append-version="true" />
@@ -37,14 +32,6 @@
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
-                    <ul class="navbar-nav ms-3">
-                        <li class="nav-item">
-                            <label id="switch" class="switch">
-                                <input type="checkbox" onchange="toggleTheme()" id="slider">
-                                <span class="slider round"></span>
-                            </label>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </nav>

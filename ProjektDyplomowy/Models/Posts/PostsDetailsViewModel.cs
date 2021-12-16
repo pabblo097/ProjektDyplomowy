@@ -1,5 +1,4 @@
 ﻿using ProjektDyplomowy.Entities;
-using ProjektDyplomowy.Models.Comments;
 
 namespace ProjektDyplomowy.Models.Posts
 {
