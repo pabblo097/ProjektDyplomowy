@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProjektDyplomowy.DAL;
 using ProjektDyplomowy.Entities;
+using ProjektDyplomowy.Hubs;
 using ProjektDyplomowy.Repositories;
 using System.Reflection;
 
@@ -30,9 +31,11 @@ builder.Services.AddDefaultIdentity<User>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IPostsRepository, PostsRepository>();
+builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 
 
 //====================================================
@@ -78,5 +81,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.MapHub<CommentsHub>("/commentsHub");
+app.MapHub<PostsHub>("/postsHub");
 
 app.Run();

@@ -28,13 +28,32 @@ namespace ProjektDyplomowy.Repositories
             return posts.ToListAsync();
         }
 
-        public Task<Post> GetPostByIdAsync(Guid id)
+        public Task<Post> GetPostByIdAsync(Guid id, string sortComBy = "date", bool commentsIncluded = false)
         {
             IQueryable<Post> posts = context.Posts
                 .Include(u => u.User)
                 .Include(t => t.Tags)
                 .Include(c => c.Category)
-                .Include(com => com.Comments);
+                .Include(ul => ul.UsersWhoLikePost);
+
+            if (commentsIncluded)
+            {
+                if (sortComBy == "date")
+                {
+                    posts = posts.Include(com => com.Comments.OrderByDescending(cd => cd.CreationDate))
+                        .ThenInclude(u => u.User);
+                    posts = posts.Include(com => com.Comments.OrderByDescending(cd => cd.CreationDate))
+                        .ThenInclude(u => u.UsersWhoLikeComment);
+                }
+
+                else
+                {
+                    posts = posts.Include(com => com.Comments.OrderByDescending(com => com.LikesQuantity))
+                        .ThenInclude(u => u.User);
+                    posts = posts.Include(com => com.Comments.OrderByDescending(com => com.LikesQuantity))
+                        .ThenInclude(u => u.UsersWhoLikeComment);
+                }
+            }
 
             return posts.FirstOrDefaultAsync(p => p.Id == id);
         }

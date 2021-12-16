@@ -32,21 +32,25 @@ namespace ProjektDyplomowy.Controllers
         }
 
         //GET /Posts/Details?postId={postId}
-        public async Task<IActionResult> Details(Guid postId)
+        [Route("[controller]/{postId}")]
+        public async Task<IActionResult> Details(Guid postId, string sortComBy = "date")
         {
-            var post = await postsRepository.GetPostByIdAsync(postId);
+            var post = await postsRepository.GetPostByIdAsync(postId, sortComBy, true);
             if (post == null)
             {
                 return NotFound();
             }
 
             var postViewModel = mapper.Map<PostsDetailsViewModel>(post);
+            postViewModel.SortCommentsBy = sortComBy;
+
 
             return View(postViewModel);
         }
 
         //GET /Posts/Add
         [Authorize]
+        [Route("[controller]/[action]")]
         public async Task<IActionResult> Add()
         {
             var postsAddViewModel = new PostsAddViewModel
@@ -68,7 +72,7 @@ namespace ProjektDyplomowy.Controllers
 
         //POST /Posts/Add
         [Authorize]
-        [HttpPost]
+        [HttpPost("[controller]/[action]")]
         public async Task<IActionResult> Add(PostsAddViewModel model)
         {
             if (ModelState.IsValid)

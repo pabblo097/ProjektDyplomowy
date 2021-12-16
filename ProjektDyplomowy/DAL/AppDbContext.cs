@@ -24,6 +24,21 @@ namespace ProjektDyplomowy.DAL
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Post>(builder =>
+            {
+                builder.HasOne(u => u.User).WithMany(p => p.Posts).HasForeignKey(fk => fk.UserId).OnDelete(DeleteBehavior.SetNull);
+                builder.HasMany(ul => ul.UsersWhoLikePost).WithMany(p => p.LikedPosts);
+            });
+
+            builder.Entity<Comment>(builder =>
+            {
+                builder.HasOne(u => u.User).WithMany(c => c.Comments).HasForeignKey(fk => fk.UserId).OnDelete(DeleteBehavior.SetNull);
+            });
+
+
+
+
+            //seed categories
             builder.Entity<Category>().HasData(new Category
             {
                 Id = Guid.Parse("3a68ccb4-4829-4cae-986f-f6bdce215331"),

@@ -66,21 +66,26 @@
                     @* pole tytul *@
                     <div class="form-group my-3">
                         <div class="form-floating">
-                            <input class="form-control" placeholder="Title" id="floatingTextareaTitle" asp-for="Title" />
+                            <input class="form-control" placeholder="Title" id="titleInput" asp-for="Title" maxlength="80" v-model="titleText" />
                             <label for="floatingTextareaTitle" asp-for="Title"></label>
                         </div>
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <div class="d-flex justify-content-between">
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                            <span>{{titleCounter}}/80</span>
+                        </div>
                     </div>
 
                     @* pole opis *@
                     <div class="form-group my-3">
                         <div class="form-floating">
                             <textarea class="form-control" id="descriptionTextarea" placeholder="Text"
-                                      asp-for="Text" v-model="descValue" maxlength="500"></textarea>
+                                      asp-for="Text" maxlength="500" v-model="descText"></textarea>
                             <label for="floatingTextareaText" asp-for="Text"></label>
                         </div>
-                        <span class="text-end d-block w-100">{{charCounter}}/500</span>
-                        <span asp-validation-for="Text" class="text-danger"></span>
+                        <div class="d-flex justify-content-between">
+                            <span asp-validation-for="Text" class="text-danger"></span>
+                            <span>{{descCounter}}/500</span>
+                        </div>
                     </div>
 
                     @* pole kategoria *@
@@ -143,23 +148,15 @@
 @section Scripts{
     <script src="~/lib/vue/dist/vue.min.js"></script>
     <script src="~/lib/voerro/vue-tagsinput/dist/voerro-vue-tagsinput.min.js"></script>
-    <script>
-        $(window).resize(updateHeight);
-
-        function updateHeight() {
-            var div = $('iframe');
-            var width = div.width();
-
-            div.css('height', width * 0.5225);
-        }
-    </script>
+    <script src="~/js/updateIFrameHeight.js"></script>
     <script>
         const app = new Vue({
             el: "#app",
             data: {
                 fileSource: $("#fileSourceInput").val(),
                 fileType: $("#fileTypeInput").val(),
-                descValue: "",
+                titleText: $("#titleInput").val(),
+                descText: $("#descriptionTextarea").val(),
                 imgTypes: ['image/gif', 'image/jpeg', 'image/png'],
                 videoTypes: ["video/mp4", "video/webm", "video/ogg"],
             },
@@ -208,8 +205,11 @@
                 }
             },
             computed: {
-                charCounter: function () {
-                    return this.descValue.length;
+                descCounter: function () {
+                    return this.descText.length;
+                },
+                titleCounter: function () {
+                    return this.titleText.length;
                 }
             },
             components: { "tags-input": VoerroTagsInput }

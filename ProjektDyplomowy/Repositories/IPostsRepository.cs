@@ -6,7 +6,7 @@ namespace ProjektDyplomowy.Repositories
     public interface IPostsRepository : IBaseRepository<Post>
     {
         Task<List<Post>> GetAllPostsAsync();
-        Task<Post> GetPostByIdAsync(Guid id);
+        Task<Post> GetPostByIdAsync(Guid id, string sortComBy = "date", bool commentsIncluded = false);
         Task<List<SelectListItem>> FillCategoriesSelectListAsync();
         string UploadFile(IFormFile file, string title);
     }

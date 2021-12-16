@@ -22,6 +22,21 @@ namespace ProjektDyplomowy.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("CommentUser", b =>
+                {
+                    b.Property<Guid>("LikedCommentsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsersWhoLikeCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LikedCommentsId", "UsersWhoLikeCommentId");
+
+                    b.HasIndex("UsersWhoLikeCommentId");
+
+                    b.ToTable("CommentUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -129,6 +144,21 @@ namespace ProjektDyplomowy.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PostUser", b =>
+                {
+                    b.Property<Guid>("LikedPostsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsersWhoLikePostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LikedPostsId", "UsersWhoLikePostId");
+
+                    b.HasIndex("UsersWhoLikePostId");
+
+                    b.ToTable("PostUser");
+                });
+
             modelBuilder.Entity("ProjektDyplomowy.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -230,7 +260,7 @@ namespace ProjektDyplomowy.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -355,6 +385,21 @@ namespace ProjektDyplomowy.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("CommentUser", b =>
+                {
+                    b.HasOne("ProjektDyplomowy.Entities.Comment", null)
+                        .WithMany()
+                        .HasForeignKey("LikedCommentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjektDyplomowy.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersWhoLikeCommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("ProjektDyplomowy.Entities.Role", null)
@@ -406,6 +451,21 @@ namespace ProjektDyplomowy.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PostUser", b =>
+                {
+                    b.HasOne("ProjektDyplomowy.Entities.Post", null)
+                        .WithMany()
+                        .HasForeignKey("LikedPostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjektDyplomowy.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersWhoLikePostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProjektDyplomowy.Entities.Comment", b =>
                 {
                     b.HasOne("ProjektDyplomowy.Entities.Post", "Post")
@@ -416,7 +476,8 @@ namespace ProjektDyplomowy.Migrations
 
                     b.HasOne("ProjektDyplomowy.Entities.User", "User")
                         .WithMany("Comments")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Post");
 
@@ -434,8 +495,7 @@ namespace ProjektDyplomowy.Migrations
                     b.HasOne("ProjektDyplomowy.Entities.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
 

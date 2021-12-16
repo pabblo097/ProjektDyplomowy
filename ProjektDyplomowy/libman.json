@@ -36,6 +36,10 @@
         "dist/voerro-vue-tagsinput.js.map",
         "dist/voerro-vue-tagsinput.min.js"
       ]
+    },
+    {
+      "library": "microsoft-signalr@6.0.0",
+      "destination": "wwwroot/lib/microsoft-signalr/"
     }
   ]
 }

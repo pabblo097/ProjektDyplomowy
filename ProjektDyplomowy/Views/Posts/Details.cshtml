@@ -1,44 +1,320 @@
 ﻿@model PostsDetailsViewModel
-@using ProjektDyplomowy.Entities
-@using System.IO
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
 @{
     ViewData["Title"] = Model.Title;
 }
+@using ProjektDyplomowy.Entities
+<div class="row">
+    <div class="col-12 col-md-8">
+        <article>
+            <div class="card">
+                <div class="card-header">
+                    @*todo link do uzytkownika*@
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <a href="#">@Model.Username</a>
+                        <div class="d-flex align-items-center gap-2">
+                            <span>Dodano: @TimeHelpers.HowMuchTimePassed(Model.CreationDate) temu</span>
 
-<p>Id: @Model.Id</p>
-<p>Tytuł: @Model.Title</p>
-<p>Opis: @Model.Text</p>
-<p>Nazwa użytkownia: @Model.Username</p>
-<p>Id uzytkownia: @Model.UserId</p>
-<p>Nazwa kategorii: @Model.CategoryName</p>
-<p>Id kategorii: @Model.CategoryId</p>
-<p>Typ zzawartości: @Model.ContentType.ToString()</p>
-<p>
-    Tagi: @foreach (var tag in Model.Tags)
-    {
-        @tag.Name;
-    }
-</p>
-<p>Zawartość:</p>
-@if (Model.ContentType == ContentType.Wideo)
-{
-    if (Model.SourceType == SourceType.Local)
-    {
-        <video src="~/uploads/@Model.FileName" controls></video>
-    }
-    else
-    {
-        <iframe src="@Model.FileName" class="w-100" allowfullscreen></iframe>
-    }
-}
-else
-{
-    if (Model.SourceType == SourceType.Local)
-    {
-        <img src="~/uploads/@Model.FileName" class="img-fluid" />
-    }
-    else
-    {
-        <img src="@Model.FileName" class="img-fluid" />
-    }
+                            @* sprawdz czy user jest adminem albo autorem postu *@
+                            @if (User.IsInRole("Admin") || (UserManager.GetUserId(User) == Model.UserId.ToString()))
+                            {
+                                @* opcje *@
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle border-0 drop-down-noarrow shadow-none"
+                                            type="button" id="settingDropdownBtn" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="settingDropdownBtn">
+                                        <li><a class="dropdown-item" href="#">Edytuj</a></li>
+                                        <li><a class="dropdown-item text-danger" href="#">Usuń</a></li>
+                                    </ul>
+                                </div>
+                            }
+
+                            @* zgłoś *@
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle border-0 drop-down-noarrow shadow-none"
+                                        type="button" id="reportDropdownBtn" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <i class="fab fa-font-awesome-flag"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="reportDropdownBtn">
+                                    <li><a class="dropdown-item" href="#">Zgłoś</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#">Jeszcze nwm</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#">co tu bedzie</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-2">
+                    <div class="d-flex justify-content-between flex-wrap">
+                        <span><a href="#">@Model.CategoryName</a></span>
+                        @if (Model.Tags != null)
+                        {
+                            <div>
+                                @foreach (var tag in Model.Tags)
+                                {
+                                    <span class="badge bg-light text-dark">#@tag.Name</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <h3 class="my-3">@Model.Title</h3>
+                    @if (!string.IsNullOrWhiteSpace(Model.Text))
+                    {
+                        <p>@Model.Text</p>
+
+                    }
+
+                    @if (Model.ContentType == ContentType.Video)
+                    {
+                        if (Model.SourceType == SourceType.Local)
+                        {
+                            <video class="w-100" src="~/uploads/@Model.FileName" controls></video>
+                        }
+                        else
+                        {
+                            <iframe src="@Model.FileName" class="w-100" allowfullscreen></iframe>
+                        }
+                    }
+                    else
+                    {
+                        if (Model.SourceType == SourceType.Local)
+                        {
+                            <img src="~/uploads/@Model.FileName" class="img-fluid w-100" />
+                        }
+                        else
+                        {
+                            <img src="@Model.FileName" class="img-fluid w-100" />
+                        }
+                    }
+
+                    <div class="d-flex justify-content-start gap-3 my-3">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @if (Model.UsersWhoLikePost.Contains(UserManager.GetUserId(User)))
+                            {
+                                <button id="likePostBtn" class="btn btn-success py-2 px-4 likePostBtn-active">
+                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                    <span>@Model.LikesQuantity</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <button id="likePostBtn" class="btn btn-primary py-2 px-4 likePostBtn">
+                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                    <span>@Model.LikesQuantity</span>
+                                </button>
+                            }
+                        }
+                        <a id="add" class="btn btn-primary py-2 px-4" href="#">
+                            <span class="me-2"><i class="fas fa-share-alt"></i></span>
+                            Udostępnij
+                        </a>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
+                        <div>
+                            Komentarze
+                        </div>
+                        <div class="d-flex gap-3">
+                            @if (Model.SortCommentsBy == "date")
+                            {
+                                <a asp-action="Details" asp-route-postId="@Model.Id" asp-route-sortComBy="date"
+                                   class="commentsBtn commentsBtn-active">Najnowsze</a>
+                                <a asp-action="Details" asp-route-postId="@Model.Id" asp-route-sortComBy="likes"
+                                   class="commentsBtn">Popularne</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Details" asp-route-postId="@Model.Id" asp-route-sortComBy="date"
+                                   class="commentsBtn">Najnowsze</a>
+                                <a asp-action="Details" asp-route-postId="@Model.Id" asp-route-sortComBy="likes"
+                                   class="commentsBtn  commentsBtn-active">Popularne</a>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!SignInManager.IsSignedIn(User))
+                    {
+                        <div class="card">
+                            <div class="card-body bg-secondary text-center">
+                                <h4>Tylko zalogowani uzytkownicy mogą dodawać komentarze.</h4>
+                                <div class="d-flex justify-content-center pt-3 gap-5">
+                                    <a class="btn btn-primary p-3" asp-area="Identity"
+                                       asp-page="/Account/Register">Rejestracja</a>
+                                    <a class="btn btn-primary p-3" asp-area="Identity"
+                                       asp-page="/Account/Login"
+                                       asp-route-ReturnUrl="/Posts/@Model.Id">Logowanie</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group mt-3 mb-2">
+                            <div class="form-floating">
+                                <input type="hidden" asp-for="Id" id="postIdInput" />
+                                <textarea class="form-control" id="commentTextarea" placeholder="Comment"></textarea>
+                                <label for="commentTextarea">Dodaj komentarz</label>
+                                <span id="commentValidation" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-end mb-4">
+                            <button id="addBtn" type="button" class="btn btn-primary px-4">
+                                <span class="mr-3"><i class="fas fa-plus"></i></span>
+                                Dodaj
+                            </button>
+                        </div>
+                    }
+
+                    <div id="commentsDiv">
+
+                        @if (Model.Comments.Any())
+                        {
+                            @foreach (var comment in Model.Comments)
+                            {
+                                <div class="card my-3">
+                                    <div class="card-body bg-secondary p-2">
+                                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2 flex-wrap">
+                                            <a href="#">@comment.Username</a>
+                                            <div class="d-flex gap-3 align-items-center justify-content-between">
+                                                Dodano: @TimeHelpers.HowMuchTimePassed(comment.CreationDate) temu
+
+                                            </div>
+                                        </div>
+                                        <div class="commentContent">
+                                            @comment.Content
+                                        </div>
+                                        <span class="text-success"></span>
+                                    </div>
+                                    <div class="card-footer pb-2 pt-0 px-2 d-flex justify-content-between
+                                         align-items-center border-0">
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            @if (SignInManager.IsSignedIn(User))
+                                            {
+                                                @* odpowiedz *@
+                                                <button class="btn btn-primary py-1 border-0 replyBtn" type="button">
+                                                    <span class="me-2"><i class="fas fa-share"></i></span>
+                                                    Odpowiedz
+                                                </button>
+                                                <input class="commentId" type="hidden" value="@comment.Id" />
+
+                                            }
+
+                                            @if (User.IsInRole("Admin") || (UserManager.GetUserId(User)
+== comment.UserId.ToString()))
+                                            {
+
+                                                @* opcje *@
+                                                <div class="dropdown">
+                                                    <button class="btn btn-primary dropdown-toggle border-0
+                                                        drop-down-noarrow shadow-none py-1"
+                                                            type="button" id="settingDropdownBtn"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        <i class="fas fa-cog"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="settingDropdownBtn">
+                                                        <li>
+                                                            <button class="dropdown-item editCommentBtn"
+                                                                    type="button">
+                                                                Edytuj
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item text-danger
+                                                                    deleteCommentBtn"
+                                                                    type="button">
+                                                                Usuń
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            }
+
+
+                                            @if (SignInManager.IsSignedIn(User))
+                                            {
+                                                @* zgłoś *@
+                                                <div class="dropdown">
+                                                    <button class="btn btn-primary dropdown-toggle border-0
+                                                    drop-down-noarrow shadow-none py-1"
+                                                            type="button" id="reportDropdownBtn"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        <i class="fab fa-font-awesome-flag"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="reportDropdownBtn">
+                                                        <li><a class="dropdown-item" href="#">Zgłoś</a></li>
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#">
+                                                                Jeszcze nwm
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#">
+                                                                co tu bedzie
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (SignInManager.IsSignedIn(User))
+                                        {
+                                            @* likes *@
+                                            @if (comment.UsersWhoLikeComment.Contains(UserManager.GetUserId(User)))
+                                            {
+                                                <button class="btn btn-success py-1 border-0 likesBtn-active">
+                                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                                    <span>@comment.LikesQuantity</span>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-primary py-1 border-0 likesBtn">
+                                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                                    <span>@comment.LikesQuantity</span>
+                                                </button>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-center" id="noComments">
+                                <h4 class="my-4">Brak komentarzy</h4>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="col-12 col-md-4 bg-black d-flex flex-column justify-content-center align-items-center position-sticky"
+         style="height:600px; top: 1.5rem">
+        <aside>
+            <h3>Reklama</h3>
+        </aside>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/updateIFrameHeight.js"></script>
+    <script src="~/js/autoResizeTextarea.js"></script>
+    @* signalr scripts *@
+    <script src="~/lib/microsoft-signalr/signalr.js"></script>
+    <script src="~/js/commentsHandler.js"></script>
+    <script src="~/js/postLikesHandler.js"></script>
 }

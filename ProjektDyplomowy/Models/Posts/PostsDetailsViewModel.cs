@@ -1,4 +1,5 @@
 ﻿using ProjektDyplomowy.Entities;
+using ProjektDyplomowy.Models.Comments;
 
 namespace ProjektDyplomowy.Models.Posts
 {
@@ -11,8 +12,9 @@ namespace ProjektDyplomowy.Models.Posts
         public SourceType SourceType { get; set; }
         public ContentType ContentType { get; set; }
         public int LikesQuantity { get; set; }
-        //todo
-        //public List<Comment> Comments { get; set; }
+        public List<string> UsersWhoLikePost { get; set; }
+        public List<CommentViewModel> Comments { get; set; }
+        public string SortCommentsBy { get; set; }
         public string Username { get; set; }
         public Guid UserId { get; set; }
         public List<Tag> Tags { get; set; }

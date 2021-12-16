@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektDyplomowy.Entities;
+using ProjektDyplomowy.Models;
 using ProjektDyplomowy.Models.Posts;
 
 namespace ProjektDyplomowy.Profiles
@@ -25,7 +26,11 @@ namespace ProjektDyplomowy.Profiles
                 .ForMember(des => des.ContentType, opt => opt.MapFrom(src => src.FileType - 1))
                 .ForMember(des => des.SourceType, opt => opt.MapFrom(src => src.FileSource - 1));
 
+            CreateMap<Comment, CommentViewModel>()
+                .ForMember(des => des.Username, opt => opt.MapFrom(src => src.User.UserName));
 
+            CreateMap<User, string>()
+                .ConvertUsing(src => src.Id.ToString());
         }
     }
 }
