@@ -10,6 +10,13 @@
 @using ProjektDyplomowy.Entities
 <div class="row">
     <div class="col-12 col-md-8">
+        @if (TempData["SuccessAlert"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessAlert"]
+            </div>
+        }
+
         <article>
             <div class="card">
                 <div class="card-header">
@@ -30,7 +37,7 @@
                                         <i class="fas fa-cog"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="settingDropdownBtn">
-                                        <li><a class="dropdown-item" href="#">Edytuj</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Posts" asp-action="Edit" asp-route-postId="@Model.Id">Edytuj</a></li>
                                         <li><a class="dropdown-item text-danger" href="#">Usuń</a></li>
                                     </ul>
                                 </div>
