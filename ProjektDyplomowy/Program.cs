@@ -11,7 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // EF Core Config
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseSqlServer(connectionString, options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+});
 
 
 // ASP.NET Core Identity Config
@@ -79,7 +81,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Posts}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.MapHub<CommentsHub>("/commentsHub");
