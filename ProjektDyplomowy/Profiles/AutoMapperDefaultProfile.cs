@@ -22,7 +22,6 @@ namespace ProjektDyplomowy.Profiles
 
             CreateMap<PostsAddViewModel, Post>()
                 .ForMember(des => des.FileName, opt => opt.Ignore())
-                .ForMember(des => des.Tags, opt => opt.Ignore())
                 .ForMember(des => des.ContentType, opt => opt.MapFrom(src => src.FileType - 1))
                 .ForMember(des => des.SourceType, opt => opt.MapFrom(src => src.FileSource - 1));
 
@@ -31,6 +30,17 @@ namespace ProjektDyplomowy.Profiles
 
             CreateMap<User, string>()
                 .ConvertUsing(src => src.Id.ToString());
+
+            CreateMap<Post, PostsEditViewModel>()
+                .ForMember(des => des.SelectCategories, opt => opt.Ignore())
+                .ReverseMap();
+            //.ForMember(src => src.Tags, opt => opt.Ignore());
+
+            CreateMap<Tag, string>()
+                .ConvertUsing(src => src.Name.ToString());
+
+            CreateMap<string, Tag>()
+                .ForMember(des => des.Name, opt => opt.MapFrom(src => src));
         }
     }
 }

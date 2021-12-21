@@ -1,0 +1,110 @@
+﻿@model PostsEditViewModel
+@{
+    ViewData["Title"] = "Edycja";
+}
+
+@section Styles{
+    <link href="~/lib/voerro/vue-tagsinput/dist/style.min.css" rel="stylesheet" />
+}
+
+<form asp-controller="Posts" asp-action="Edit" method="post">
+    <div class="d-flex justify-content-center mt-5" id="app">
+        <div class="card col-12 col-md-8">
+            <div class="card-header">
+                <h4 class="text-center my-2">Edytuj post.</h4>
+            </div>
+            <div class="card-body">
+                @* pole tytul *@
+                <div class="form-group my-3">
+                    <div class="form-floating">
+                        <input class="form-control" placeholder="Title" id="titleInput" asp-for="Title" maxlength="80" v-model="titleText" />
+                        <label for="floatingTextareaTitle" asp-for="Title"></label>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <span>{{titleCounter}}/80</span>
+                    </div>
+                </div>
+
+                @* pole opis *@
+                <div class="form-group my-3">
+                    <div class="form-floating">
+                        <textarea class="form-control" id="descriptionTextarea" placeholder="Text"
+                                  asp-for="Text" maxlength="500" v-model="descText"></textarea>
+                        <label for="floatingTextareaText" asp-for="Text"></label>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span asp-validation-for="Text" class="text-danger"></span>
+                        <span>{{descCounter}}/500</span>
+                    </div>
+                </div>
+
+                @* pole kategoria *@
+                <div class="form-group my-3">
+                    <div class="form-floating">
+                        <select class="form-control" placeholder="CategoryId" id="floatingTextareaCategoryId" asp-for="CategoryId" asp-items="Model.SelectCategories"></select>
+                        <label for="floatingTextareaCategoryId" asp-for="CategoryId"></label>
+                    </div>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                @* pole tagi *@
+                <div class="form-group my-3">
+                    <tags-input placeholder="Dodaj tag (opcjonalnie)" element-id="Tags"
+                                add-tags-on-space="true" value-fields="value" v-on:initialized="onInitialized"
+                                v-model="selectedTags"></tags-input>
+                </div>
+
+                <div class="form-group">
+                    <button id="add" type="submit" class="btn btn-primary py-2 px-4">
+                        <span class="mr-3"><i class="fas fa-edit"></i></span>
+                        Edytuj
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Tags.Any())
+    {
+        @for (int i = 0; i < Model.Tags.Count; i++)
+        {
+            <input asp-for="Tags[i]" type="hidden" class="tags" />
+        }
+    }
+    <input type="hidden" asp-for="Id" />
+</form>
+
+
+@section Scripts{
+    <script src="~/lib/vue/dist/vue.min.js"></script>
+    <script src="~/lib/voerro/vue-tagsinput/dist/voerro-vue-tagsinput.min.js"></script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data: {
+                titleText: $("#titleInput").val(),
+                descText: $("#descriptionTextarea").val(),
+                selectedTags: [],
+            },
+            computed: {
+                descCounter: function () {
+                    return this.descText.length;
+                },
+                titleCounter: function () {
+                    return this.titleText.length;
+                }
+            },
+            components: { "tags-input": VoerroTagsInput },
+            methods: {
+                onInitialized() {
+                    const tags = document.querySelectorAll(".tags");
+                    tags.forEach(tag => {
+                        this.selectedTags.push({ key: tag.value, value: tag.value })
+                    })
+                }
+            }
+        })
+    </script>
+
+}
