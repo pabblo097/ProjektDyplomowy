@@ -17,6 +17,13 @@
             </div>
         }
 
+        @if (TempData["DangerAlert"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>@TempData["DangerAlert"]
+            </div>
+        }
+
         <article>
             <div class="card">
                 <div class="card-header">
@@ -38,7 +45,12 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="settingDropdownBtn">
                                         <li><a class="dropdown-item" asp-controller="Posts" asp-action="Edit" asp-route-postId="@Model.Id">Edytuj</a></li>
-                                        <li><a class="dropdown-item text-danger" href="#">Usuń</a></li>
+                                        <li>
+                                            <button type="button" class="dropdown-item text-danger"
+                                                    data-bs-toggle="modal" data-bs-target="#deletePostModal">
+                                                Usuń
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
                             }
@@ -314,7 +326,27 @@
             <h3>Reklama</h3>
         </aside>
     </div>
+</div>
 
+
+<div class="modal fade modal-centered" id="deletePostModal" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePostModalLabel">Usuń post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                Czy na pewno chcesz usunąć ten post?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                <form method="post" asp-controller="Posts" asp-action="Delete" asp-route-postId="@Model.Id">
+                    <button class="btn btn-danger" type="submit">Usuń</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

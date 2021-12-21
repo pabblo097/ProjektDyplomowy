@@ -36,7 +36,7 @@ namespace ProjektDyplomowy.Controllers
             var post = await postsRepository.GetPostByIdAsync(postId, sortComBy, true);
             if (post == null)
             {
-                return View("Error");
+                return RedirectToAction("404", "Errors");
             }
 
             var postViewModel = mapper.Map<PostsDetailsViewModel>(post);
@@ -127,14 +127,22 @@ namespace ProjektDyplomowy.Controllers
             return View(model);
         }
 
+        [Authorize]
         [Route("[controller]/[action]/{postId}")]
         public async Task<IActionResult> Edit(Guid postId)
         {
             var post = await postsRepository.GetPostByIdAsync(postId);
+            var user = await userManager.GetUserAsync(this.User);
+
+            if (!await userManager.IsInRoleAsync(user, "Admin") && user != post.User)
+            {
+                TempData["DangerAlert"] = "Nie posiadasz uprawnień do edytowania tego postu.";
+                return RedirectToAction("Details", new { postId = post.Id });
+            }
 
             if (post == null)
             {
-                return View("Error");
+                return RedirectToAction("404", "Errors");
             }
 
             var postViewModel = mapper.Map<PostsEditViewModel>(post);
@@ -143,6 +151,7 @@ namespace ProjektDyplomowy.Controllers
             return View(postViewModel);
         }
 
+        [Authorize]
         [HttpPost("[controller]/[action]/{postId}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PostsEditViewModel model)
@@ -164,6 +173,34 @@ namespace ProjektDyplomowy.Controllers
 
             model.SelectCategories = await postsRepository.FillCategoriesSelectListAsync();
             return View(model);
+        }
+
+        [Authorize]
+        [HttpPost("[controller]/[action]/{postId}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid postId)
+        {
+            var post = await postsRepository.GetPostByIdAsync(postId);
+            var user = await userManager.GetUserAsync(this.User);
+
+            if (!await userManager.IsInRoleAsync(user, "Admin") && user != post.User)
+            {
+                TempData["DangerAlert"] = "Nie posiadasz uprawnień do usunięcia tego postu.";
+                return RedirectToAction("Details", new { postId = post.Id });
+            }
+
+            if (post == null)
+            {
+                return RedirectToAction("404", "Errors");
+            }
+
+            if (!await postsRepository.RemoveAsync(post))
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            TempData["SuccessAlert"] = "Pomyślnie usunięto post.";
+            return RedirectToAction("Index", "Posts");
         }
     }
 }

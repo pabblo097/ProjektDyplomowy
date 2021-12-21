@@ -76,5 +76,15 @@ namespace ProjektDyplomowy.Repositories
 
             return uniqueFileName;
         }
+
+        public override Task<bool> RemoveAsync(Post entity)
+        {
+            var uploads = Path.Combine(hostEnvironment.WebRootPath, "uploads");
+            var filePath = Path.Combine(uploads, entity.FileName);
+
+            File.Delete(filePath);
+
+            return base.RemoveAsync(entity);
+        }
     }
 }

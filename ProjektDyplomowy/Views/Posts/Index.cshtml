@@ -3,6 +3,13 @@
     ViewData["Title"] = "Strona główna";
 }
 
+@if (TempData["SuccessAlert"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessAlert"]
+    </div>
+}
+
 <table class="table">
     @foreach (var post in Model)
     {
