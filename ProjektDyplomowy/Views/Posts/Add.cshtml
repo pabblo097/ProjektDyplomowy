@@ -97,10 +97,19 @@
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
+                    @if (Model.Tags.Any())
+                    {
+                        @for (int i = 0; i < Model.Tags.Count; i++)
+                        {
+                            <input asp-for="Tags[i]" type="hidden" class="tags" />
+                        }
+                    }
+
                     @* pole tagi *@
                     <div class="form-group my-3">
                         <tags-input placeholder="Dodaj tag (opcjonalnie)" element-id="Tags"
-                                    add-tags-on-space="true" value-fields="value"></tags-input>
+                                    add-tags-on-space="true" value-fields="value"
+                                    v-on:initialized="onInitialized" v-model="selectedTags"></tags-input>
                     </div>
 
                     @* pole dla (rodzaju zrodla == pliki lokalne); rozni sie w zaleznosci od rodzaju tresci *@
@@ -159,6 +168,7 @@
                 descText: $("#descriptionTextarea").val(),
                 imgTypes: ['image/gif', 'image/jpeg', 'image/png'],
                 videoTypes: ["video/mp4", "video/webm", "video/ogg"],
+                selectedTags: []
             },
             methods: {
                 changeFileType: function (value) {
@@ -202,6 +212,12 @@
                         $("#filePreview").append(fileNode);
                     }
 
+                },
+                onInitialized() {
+                    const tags = document.querySelectorAll(".tags");
+                    tags.forEach(tag => {
+                        this.selectedTags.push({ key: tag.value, value: tag.value })
+                    })
                 }
             },
             computed: {
