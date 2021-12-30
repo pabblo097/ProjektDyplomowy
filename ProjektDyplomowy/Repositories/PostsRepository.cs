@@ -23,7 +23,8 @@ namespace ProjektDyplomowy.Repositories
             IQueryable<Post> posts = context.Posts
                 .Include(u => u.User)
                 .Include(t => t.Tags)
-                .Include(c => c.Category);
+                .Include(c => c.Category)
+                .Include(ul => ul.UsersWhoLikePost);
 
             return posts.ToListAsync();
         }

@@ -14,7 +14,9 @@ namespace ProjektDyplomowy.Profiles
                 .ForMember(des => des.Text, opt => opt.MapFrom(src => src.Name))
                 .ForMember(des => des.Value, opt => opt.MapFrom(src => src.Id));
 
-            CreateMap<Post, PostsIndexViewModel>();
+            CreateMap<Post, PostsIndexViewModel>()
+                .ForMember(des => des.Username, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(des => des.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
 
             CreateMap<Post, PostsDetailsViewModel>()
                 .ForMember(des => des.Username, opt => opt.MapFrom(src => src.User.UserName))

@@ -9,7 +9,7 @@
 }
 @using ProjektDyplomowy.Entities
 <div class="row">
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-lg-8 col-xl-7 offset-xl-1">
         @if (TempData["SuccessAlert"] != null)
         {
             <div class="alert alert-success">
@@ -131,6 +131,13 @@
                                     <span>@Model.LikesQuantity</span>
                                 </button>
                             }
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary py-2 px-4" disabled>
+                                <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                <span>@Model.LikesQuantity</span>
+                            </button>
                         }
                         <a id="add" class="btn btn-primary py-2 px-4" href="#">
                             <span class="me-2"><i class="fas fa-share-alt"></i></span>
@@ -259,33 +266,30 @@
                                                 </div>
                                             }
 
-
-                                            @if (SignInManager.IsSignedIn(User))
-                                            {
-                                                @* zgłoś *@
-                                                <div class="dropdown">
-                                                    <button class="btn btn-primary dropdown-toggle border-0
+                                            @* zgłoś *@
+                                            <div class="dropdown">
+                                                <button class="btn btn-primary dropdown-toggle border-0
                                                     drop-down-noarrow shadow-none py-1"
-                                                            type="button" id="reportDropdownBtn"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-expanded="false">
-                                                        <i class="fab fa-font-awesome-flag"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="reportDropdownBtn">
-                                                        <li><a class="dropdown-item" href="#">Zgłoś</a></li>
-                                                        <li>
-                                                            <a class="dropdown-item text-danger" href="#">
-                                                                Jeszcze nwm
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item text-danger" href="#">
-                                                                co tu bedzie
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            }
+                                                        type="button" id="reportDropdownBtn"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                    <i class="fab fa-font-awesome-flag"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="reportDropdownBtn">
+                                                    <li><a class="dropdown-item" href="#">Zgłoś</a></li>
+                                                    <li>
+                                                        <a class="dropdown-item text-danger" href="#">
+                                                            Jeszcze nwm
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item text-danger" href="#">
+                                                            co tu bedzie
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
                                         </div>
                                         @if (SignInManager.IsSignedIn(User))
                                         {
@@ -305,6 +309,13 @@
                                                 </button>
                                             }
                                         }
+                                        else
+                                        {
+                                            <button class="btn btn-primary py-1 border-0" disabled>
+                                                <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                                <span>@comment.LikesQuantity</span>
+                                            </button>
+                                        }
                                     </div>
                                 </div>
                             }
@@ -320,7 +331,7 @@
             </div>
         </article>
     </div>
-    <div class="col-12 col-md-4 bg-black d-flex flex-column justify-content-center align-items-center position-sticky"
+    <div class="col-12 col-lg-4 col-xl-3 bg-black d-flex flex-column justify-content-center align-items-center position-sticky"
          style="height:600px; top: 1.5rem">
         <aside>
             <h3>Reklama</h3>

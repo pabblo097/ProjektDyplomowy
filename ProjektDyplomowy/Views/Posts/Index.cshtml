@@ -1,4 +1,10 @@
 ﻿@model List<PostsIndexViewModel>
+
+@using ProjektDyplomowy.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
 @{
     ViewData["Title"] = "Strona główna";
 }
@@ -10,15 +16,112 @@
     </div>
 }
 
-<table class="table">
-    @foreach (var post in Model)
-    {
-        <tr>
-            <td>
-                <a asp-controller="Posts" asp-action="Details" asp-route-postId="@post.Id">
-                    @post.Title
-                </a>
-            </td>
-        </tr>
-    }
-</table>
+
+<div class="row">
+    <div class="col-12 col-lg-8 col-xl-7 offset-xl-1">
+        @foreach (var post in Model)
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    @*todo link do uzytkownika*@
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <a href="#">@post.Username</a>
+                        <span>Dodano: @TimeHelpers.HowMuchTimePassed(post.CreationDate) temu</span>
+                    </div>
+                </div>
+                <div class="card-body pt-2">
+                    <div class="d-flex justify-content-between flex-wrap">
+                        <span><a href="#">@post.CategoryName</a></span>
+                        @if (post.Tags != null)
+                        {
+                            <div>
+                                @foreach (var tag in post.Tags)
+                                {
+                                    <span class="badge bg-light text-dark">#@tag.Name</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <a class="text-white" asp-controller="Posts" asp-action="Details" asp-route-postId="@post.Id">
+                        <h3 class="my-3">@post.Title</h3>
+                    </a>
+                    @if (!string.IsNullOrWhiteSpace(post.Text))
+                    {
+                        <p>@post.Text</p>
+
+                    }
+
+                    @if (post.ContentType == ContentType.Video)
+                    {
+                        if (post.SourceType == SourceType.Local)
+                        {
+                            <video class="w-100" src="~/uploads/@post.FileName" controls></video>
+                        }
+                        else
+                        {
+                            <iframe src="@post.FileName" class="w-100" allowfullscreen></iframe>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Posts" asp-action="Details" asp-route-postId="@post.Id">
+                            @if (post.SourceType == SourceType.Local)
+                            {
+                                <img src="~/uploads/@post.FileName" class="img-fluid w-100" />
+                            }
+                            else
+                            {
+                                <img src="@post.FileName" class="img-fluid w-100" />
+                            }
+                        </a>
+                    }
+
+                    <div class="d-flex justify-content-start gap-3 my-3">
+                        <input type="hidden" asp-for="@post.Id" />
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @if (post.UsersWhoLikePost.Contains(UserManager.GetUserId(User)))
+                            {
+                                <button class="btn btn-success py-2 px-4 likePostBtn likePostBtn-active">
+                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                    <span>@post.LikesQuantity</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary py-2 px-4 likePostBtn">
+                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                    <span>@post.LikesQuantity</span>
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary py-2 px-4" disabled>
+                                <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                <span>@post.LikesQuantity</span>
+                            </button>
+                        }
+                        <a id="add" class="btn btn-primary py-2 px-4" href="#">
+                            <span class="me-2"><i class="fas fa-share-alt"></i></span>
+                            Udostępnij
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-12 col-lg-4 col-xl-3 bg-black d-flex flex-column justify-content-center align-items-center position-sticky"
+         style="height:600px; top: 1.5rem">
+        <aside>
+            <h3>Reklama</h3>
+        </aside>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/updateIFrameHeight.js"></script>
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script src="~/js/indexPostsLikesHandler.js"></script>
+}
