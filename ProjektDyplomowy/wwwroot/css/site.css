@@ -196,3 +196,7 @@ a {
 .btn > * {
     pointer-events: none;
 }
+
+.page-link {
+    padding: 0.75rem 0.9rem;
+}

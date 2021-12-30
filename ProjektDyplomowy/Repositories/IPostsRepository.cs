@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektDyplomowy.Entities;
+using ProjektDyplomowy.Models.Posts;
 
 namespace ProjektDyplomowy.Repositories
 {
     public interface IPostsRepository : IBaseRepository<Post>
     {
-        Task<List<Post>> GetAllPostsAsync();
+        Task<PagedPostsIndexViewModel> GetAllPostsAsync(int page = 1, string category = "none");
         Task<Post> GetPostByIdAsync(Guid id, string sortComBy = "date", bool commentsIncluded = false);
         Task<List<SelectListItem>> FillCategoriesSelectListAsync();
         string UploadFile(IFormFile file, string title);

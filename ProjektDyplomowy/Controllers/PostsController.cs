@@ -21,13 +21,12 @@ namespace ProjektDyplomowy.Controllers
             this.userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, string category = "none")
         {
-            var posts = await postsRepository.GetAllPostsAsync();
+            var pagedPosts = await postsRepository.GetAllPostsAsync(page, category);
 
-            var postsViewModel = mapper.Map<List<PostsIndexViewModel>>(posts);
 
-            return View(postsViewModel);
+            return View(pagedPosts);
         }
 
         [Route("[controller]/{postId}")]

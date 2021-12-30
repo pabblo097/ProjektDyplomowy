@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektDyplomowy.DAL;
 using ProjektDyplomowy.Entities;
+using ProjektDyplomowy.Models.Posts;
 using System.Text.RegularExpressions;
 
 namespace ProjektDyplomowy.Repositories
@@ -18,7 +19,7 @@ namespace ProjektDyplomowy.Repositories
             this.hostEnvironment = hostEnvironment;
         }
 
-        public Task<List<Post>> GetAllPostsAsync()
+        public async Task<PagedPostsIndexViewModel> GetAllPostsAsync(int page = 1, string category = "none")
         {
             IQueryable<Post> posts = context.Posts
                 .Include(u => u.User)
@@ -26,7 +27,25 @@ namespace ProjektDyplomowy.Repositories
                 .Include(c => c.Category)
                 .Include(ul => ul.UsersWhoLikePost);
 
-            return posts.ToListAsync();
+            if (category != "none")
+            {
+                posts = posts.Where(c => c.Category.Name == category);
+            }
+
+            int size = 10;
+            int skip = (page - 1) * size;
+            int count = await posts.CountAsync();
+            posts = posts.Skip(skip).Take(size);
+
+            var pagedPosts = new PagedPostsIndexViewModel
+            {
+                Posts = mapper.Map<List<PostsIndexViewModel>>(posts),
+                CurrentPage = page,
+                PageSize = size,
+                AllItemsCount = count
+            };
+
+            return pagedPosts;
         }
 
         public Task<Post> GetPostByIdAsync(Guid id, string sortComBy = "date", bool commentsIncluded = false)
@@ -80,10 +99,13 @@ namespace ProjektDyplomowy.Repositories
 
         public override Task<bool> RemoveAsync(Post entity)
         {
-            var uploads = Path.Combine(hostEnvironment.WebRootPath, "uploads");
-            var filePath = Path.Combine(uploads, entity.FileName);
+            if (entity.SourceType == SourceType.Local)
+            {
+                var uploads = Path.Combine(hostEnvironment.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, entity.FileName);
 
-            File.Delete(filePath);
+                File.Delete(filePath);
+            }
 
             return base.RemoveAsync(entity);
         }
