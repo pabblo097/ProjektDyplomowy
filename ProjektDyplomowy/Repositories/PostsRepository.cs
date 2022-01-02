@@ -19,7 +19,7 @@ namespace ProjektDyplomowy.Repositories
             this.hostEnvironment = hostEnvironment;
         }
 
-        public async Task<PagedPostsIndexViewModel> GetAllPostsAsync(int page = 1, string category = "none")
+        public async Task<PagedPostsIndexViewModel> GetAllPostsAsync(int page = 1, string sortBy = "date", string category = "none")
         {
             IQueryable<Post> posts = context.Posts
                 .Include(u => u.User)
@@ -32,6 +32,16 @@ namespace ProjektDyplomowy.Repositories
                 posts = posts.Where(c => c.Category.Name == category);
             }
 
+            if (sortBy == "date")
+            {
+                posts = posts.OrderByDescending(d => d.CreationDate);
+            }
+            else if (sortBy == "likes")
+            {
+                posts = posts.OrderByDescending(d => d.CreationDate.Date).ThenByDescending(l => l.LikesQuantity);
+            }
+
+
             int size = 10;
             int skip = (page - 1) * size;
             int count = await posts.CountAsync();
@@ -39,10 +49,12 @@ namespace ProjektDyplomowy.Repositories
 
             var pagedPosts = new PagedPostsIndexViewModel
             {
-                Posts = mapper.Map<List<PostsIndexViewModel>>(posts),
+                Posts = mapper.Map<List<PostsIndexViewModel>>(await posts.ToListAsync()),
                 CurrentPage = page,
                 PageSize = size,
-                AllItemsCount = count
+                AllItemsCount = count,
+                SortBy = sortBy,
+                CategoryName = category
             };
 
             return pagedPosts;
@@ -92,12 +104,15 @@ namespace ProjektDyplomowy.Repositories
 
             var uploads = Path.Combine(hostEnvironment.WebRootPath, "uploads");
             var filePath = Path.Combine(uploads, uniqueFileName);
-            file.CopyTo(new FileStream(filePath, FileMode.Create));
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
 
             return uniqueFileName;
         }
 
-        public override Task<bool> RemoveAsync(Post entity)
+        public void RemoveFile(Post entity)
         {
             if (entity.SourceType == SourceType.Local)
             {
@@ -106,8 +121,52 @@ namespace ProjektDyplomowy.Repositories
 
                 File.Delete(filePath);
             }
+        }
+
+        public override Task<bool> RemoveAsync(Post entity)
+        {
+            RemoveFile(entity);
 
             return base.RemoveAsync(entity);
         }
+
+        //public async Task<PagedPostsSearchViewModel> SearchPostsAsync(string searchTerm, SearchType searchType, int page = 1)
+        //{
+        //    IQueryable<Post> posts = context.Posts
+        //        .Include(u => u.User)
+        //        .Include(t => t.Tags)
+        //        .Include(c => c.Category)
+        //        .Include(ul => ul.UsersWhoLikePost);
+
+        //    if (searchType == SearchType.Tytuły)
+        //    {
+        //        posts = posts.Where(p => p.Title.Contains(searchTerm));
+        //    }
+        //    else if (searchType == SearchType.Tagi)
+        //    {
+        //        posts = posts.Where(p => p.Tags.Any(t => t.Name == searchTerm));
+        //    }
+        //    else if (searchType == SearchType.Wszystko)
+        //    {
+        //        posts = posts.Where(p => p.Title.Contains(searchTerm) || p.Tags.Any(t => t.Name == searchTerm));
+        //    }
+
+        //    int size = 10;
+        //    int skip = (page - 1) * size;
+        //    int count = await posts.CountAsync();
+        //    posts = posts.Skip(skip).Take(size);
+
+        //    var pagedPosts = new PagedPostsSearchViewModel
+        //    {
+        //        Posts = mapper.Map<List<PostsIndexViewModel>>(await posts.ToListAsync()),
+        //        CurrentPage = page,
+        //        PageSize = size,
+        //        AllItemsCount = count,
+        //        SearchTerm = searchTerm,
+        //        SearchType = searchType
+        //    };
+
+        //    return pagedPosts;
+        //}
     }
 }

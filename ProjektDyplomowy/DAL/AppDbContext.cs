@@ -28,6 +28,7 @@ namespace ProjektDyplomowy.DAL
             {
                 builder.HasOne(u => u.User).WithMany(p => p.Posts).HasForeignKey(fk => fk.UserId).OnDelete(DeleteBehavior.SetNull);
                 builder.HasMany(ul => ul.UsersWhoLikePost).WithMany(p => p.LikedPosts);
+                builder.HasMany(t => t.Tags).WithOne(p => p.Post).HasForeignKey(fk => fk.PostId).OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Comment>(builder =>

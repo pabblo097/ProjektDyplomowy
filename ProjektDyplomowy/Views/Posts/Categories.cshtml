@@ -6,7 +6,7 @@
 @inject UserManager<User> UserManager
 
 @{
-    ViewData["Title"] = "Strona główna";
+    ViewData["Title"] = Model.CategoryName;
 }
 
 @if (TempData["SuccessAlert"] != null)
@@ -21,21 +21,21 @@
     <div class="col-12 col-lg-8 col-xl-7 offset-xl-1">
         <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
             <div class="fs-4">
-                <span>Strona głowna</span>
+                <span>@Model.CategoryName</span>
             </div>
             <div class="d-flex gap-3">
                 @if (Model.SortBy == "date")
                 {
-                    <a asp-controller="Posts" asp-action="Index" asp-route-sortBy="date"
+                    <a asp-controller="Posts" asp-action="Categories" asp-route-category="@Model.CategoryName" asp-route-sortBy="date"
                        class="commentsBtn commentsBtn-active">Najnowsze</a>
-                    <a asp-controller="Posts" asp-action="Index" asp-route-sortBy="likes"
+                    <a asp-controller="Posts" asp-action="Categories" asp-route-category="@Model.CategoryName" asp-route-sortBy="likes"
                        class="commentsBtn">Popularne</a>
                 }
                 else
                 {
-                    <a asp-controller="Posts" asp-action="Index" asp-route-sortBy="date"
+                    <a asp-controller="Posts" asp-action="Categories" asp-route-category="@Model.CategoryName" asp-route-sortBy="date"
                        class="commentsBtn">Najnowsze</a>
-                    <a asp-controller="Posts" asp-action="Index" asp-route-sortBy="likes"
+                    <a asp-controller="Posts" asp-action="Categories" asp-route-category="@Model.CategoryName" asp-route-sortBy="likes"
                        class="commentsBtn  commentsBtn-active">Popularne</a>
                 }
             </div>
@@ -135,7 +135,7 @@
 
         @if (Model.CurrentPage != (int)Math.Ceiling(Decimal.Divide(Model.AllItemsCount, Model.PageSize)))
         {
-            <a asp-controller="Posts" asp-action="Index" asp-route-page="@(Model.CurrentPage+1)" asp-route-sortBy="@Model.SortBy"
+            <a href="@Model.CategoryName?page=@(Model.CurrentPage+1)&sortBy=@Model.SortBy"
                class="btn btn-outline-success w-100 mb-4 p-3 fs-3">Następna strona</a>
         }
 
@@ -166,3 +166,4 @@
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/js/indexPostsLikesHandler.js"></script>
 }
+

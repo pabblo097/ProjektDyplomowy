@@ -1,0 +1,11 @@
+﻿@using ProjektDyplomowy.Repositories
+@using Microsoft.AspNetCore.Identity
+@using ProjektDyplomowy.Entities
+
+@inject ICategoriesRepository categoriesRepository
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
+
+@{
+    var categories = await categoriesRepository.GetAllCategoriesAsync();
+}

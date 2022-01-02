@@ -200,3 +200,29 @@ a {
 .page-link {
     padding: 0.75rem 0.9rem;
 }
+
+.justify-self-start {
+    justify-self: start;
+}
+
+.input-white {
+    background-color: white !important;
+    color: black !important;
+}
+
+.moby {
+    background-color: #375A7F;
+}
+
+    .moby ul li a {
+        color: white;
+    }
+
+.moby-close {
+    background-color: #20354C !important;
+}
+
+.form-select {
+    background-color: #414141;
+    color: white;
+}

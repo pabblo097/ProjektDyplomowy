@@ -1,13 +1,15 @@
 ﻿@model PostsDetailsViewModel
 
 @using Microsoft.AspNetCore.Identity
+@using ProjektDyplomowy.Entities
+
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = Model.Title;
 }
-@using ProjektDyplomowy.Entities
+
 <div class="row">
     <div class="col-12 col-lg-8 col-xl-7 offset-xl-1">
         @if (TempData["SuccessAlert"] != null)
@@ -73,7 +75,7 @@
                 </div>
                 <div class="card-body pt-2">
                     <div class="d-flex justify-content-between flex-wrap">
-                        <span><a href="#">@Model.CategoryName</a></span>
+                        <span><a asp-controller="Posts" asp-action="Categories" asp-route-category="@Model.CategoryName">@Model.CategoryName</a></span>
                         @if (Model.Tags != null)
                         {
                             <div>

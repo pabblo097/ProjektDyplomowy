@@ -38,6 +38,7 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IPostsRepository, PostsRepository>();
 builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
+builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 
 
 //====================================================

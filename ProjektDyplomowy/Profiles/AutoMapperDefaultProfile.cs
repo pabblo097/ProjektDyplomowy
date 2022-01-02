@@ -43,6 +43,8 @@ namespace ProjektDyplomowy.Profiles
 
             CreateMap<string, Tag>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src));
+
+            CreateMap<Category, CategoryViewModel>().ReverseMap();
         }
     }
 }

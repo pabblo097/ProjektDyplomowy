@@ -309,7 +309,7 @@ namespace ProjektDyplomowy.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PostId")
+                    b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -504,9 +504,13 @@ namespace ProjektDyplomowy.Migrations
 
             modelBuilder.Entity("ProjektDyplomowy.Entities.Tag", b =>
                 {
-                    b.HasOne("ProjektDyplomowy.Entities.Post", null)
+                    b.HasOne("ProjektDyplomowy.Entities.Post", "Post")
                         .WithMany("Tags")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("ProjektDyplomowy.Entities.Category", b =>

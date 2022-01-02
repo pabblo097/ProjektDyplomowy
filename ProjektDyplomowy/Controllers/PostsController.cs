@@ -8,6 +8,7 @@ using ProjektDyplomowy.Repositories;
 
 namespace ProjektDyplomowy.Controllers
 {
+    [Controller]
     public class PostsController : Controller
     {
         private readonly IPostsRepository postsRepository;
@@ -21,10 +22,14 @@ namespace ProjektDyplomowy.Controllers
             this.userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int page = 1, string category = "none")
+        public async Task<IActionResult> Index(int page = 1, string sortBy = "likes")
         {
-            var pagedPosts = await postsRepository.GetAllPostsAsync(page, category);
+            var pagedPosts = await postsRepository.GetAllPostsAsync(page, sortBy);
 
+            if (!pagedPosts.Posts.Any())
+            {
+                return RedirectToAction("404", "Error");
+            }
 
             return View(pagedPosts);
         }
@@ -35,7 +40,7 @@ namespace ProjektDyplomowy.Controllers
             var post = await postsRepository.GetPostByIdAsync(postId, sortComBy, true);
             if (post == null)
             {
-                return RedirectToAction("404", "Errors");
+                return RedirectToAction("404", "Error");
             }
 
             var postViewModel = mapper.Map<PostsDetailsViewModel>(post);
@@ -200,6 +205,19 @@ namespace ProjektDyplomowy.Controllers
 
             TempData["SuccessAlert"] = "Pomyślnie usunięto post.";
             return RedirectToAction("Index", "Posts");
+        }
+
+        [Route("Kategoria/{category}")]
+        public async Task<IActionResult> Categories([FromRoute] string category, int page = 1, string sortBy = "likes")
+        {
+            var pagedPosts = await postsRepository.GetAllPostsAsync(page, sortBy, category);
+
+            if (!pagedPosts.Posts.Any())
+            {
+                return RedirectToAction("404", "Error");
+            }
+
+            return View(pagedPosts);
         }
     }
 }

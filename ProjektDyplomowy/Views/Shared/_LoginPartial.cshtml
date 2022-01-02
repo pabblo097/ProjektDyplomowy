@@ -4,25 +4,43 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-<ul class="navbar-nav">
+<ul class="navbar-nav gap-3 gap-md-2">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a id="manage" class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Witaj @UserManager.GetUserName(User)!</a>
+            <a class="nav-link btn btn-outline-success text-white px-3 py-3 py-md-2 mt-3 mt-lg-0" asp-controller="Posts" asp-action="Add">Dodaj post</a>
         </li>
-        <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="nav-link btn btn-link">Wyloguj się</button>
-            </form>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white btn btn-success px-3 py-3 py-md-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Ustawienia
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li class="dropdown-header">
+                    Witaj @UserManager.GetUserName(User)!
+                </li>
+                <li><hr class="dropdown-divider border-white"></li>
+                <li>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Zarządzaj kontem</a>
+                </li>
+                <li>
+                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button id="logout" type="submit" class="dropdown-item btn btn-link">Wyloguj się</button>
+                    </form>
+                </li>
+            </ul>
         </li>
+
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Rejestracja</a>
+            <a class="nav-link btn btn-outline-success text-white px-3 py-3 py-md-2" id="login" asp-area="Identity" asp-page="/Account/Login">Logowanie</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="login" asp-area="Identity" asp-page="/Account/Login">Logowanie</a>
+            <a class="nav-link btn btn-success text-white px-3 py-3 py-md-2" id="register" asp-area="Identity" asp-page="/Account/Register">Rejestracja</a>
         </li>
     }
 </ul>
+
+

@@ -1,0 +1,27 @@
+﻿@using ProjektDyplomowy.Repositories
+@using Microsoft.AspNetCore.Identity
+@using ProjektDyplomowy.Entities
+
+@inject ICategoriesRepository categoriesRepository
+@inject UserManager<User> UserManager
+
+@{
+    var categories = await categoriesRepository.GetAllCategoriesAsync();
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Kategorie
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        @foreach (var category in categories)
+        {
+            <li><a class="dropdown-item" asp-controller="Posts" asp-action="Categories" asp-route-category="@category.Name">@category.Name</a></li>
+        }
+        @if (User.IsInRole("Admin"))
+        {
+            <li><hr class="dropdown-divider border-white"></li>
+            <li><a class="dropdown-item" asp-controller="Categories" asp-action="Manage">Zarządzaj kategoriami</a></li>
+        }
+    </ul>
+</li>

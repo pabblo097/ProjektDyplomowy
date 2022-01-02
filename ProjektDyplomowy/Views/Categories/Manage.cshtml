@@ -1,0 +1,80 @@
+﻿@using ProjektDyplomowy.Entities
+@model List<Category>
+@{
+    ViewData["Title"] = "Zarządzaj kategoriami";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+@if (TempData["SuccessAlert"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessAlert"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Guid</th>
+            <th scope="col">Opcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td class="fw-bold">@category.Name</td>
+                <td>@category.Id</td>
+                <td class="d-flex gap-2 flex-wrap">
+                    <a class="btn btn-primary flex-grow-1" asp-controller="Posts" asp-action="Categories" asp-route-category="@category.Name">Posty</a>
+                    <a class="btn btn-primary flex-grow-1" asp-controller="Categories" asp-action="Edit" asp-route-categoryId="@category.Id">Edytuj</a>
+                    <button type="button" class="btn btn-danger flex-grow-1" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" onclick="setModal('@category.Id')">
+                        Usuń
+                    </button>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="3" class="text-center">
+                <a class="btn btn-primary px-3 py-2" asp-controller="Categories" asp-action="Add">Dodaj kategorie</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="modal fade modal-centered" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCategoryModalLabel">Usuń kategorie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <p>Czy na pewno chcesz usunąć tą kategorie?</p>
+                <p class="text-danger fw-bold">Wszystkie powiązane posty zostaną usunięte!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                <form method="post">
+                    <button class="btn btn-danger" type="submit">Usuń</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        console.log("fasdfaf")
+        const modalCategoryLink = document.querySelector("#deleteCategoryModal > div > div > div.modal-footer > form")
+
+        function setModal(categoryId) {
+            console.log("setmodel")
+            modalCategoryLink.setAttribute("action", `Delete/${categoryId}`);
+        }
+    </script>
+}
