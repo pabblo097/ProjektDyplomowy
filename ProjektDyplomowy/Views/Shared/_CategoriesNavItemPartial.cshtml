@@ -25,3 +25,9 @@
         }
     </ul>
 </li>
+@if (User.IsInRole("Admin"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-white" asp-controller="Reports" asp-action="Manage">Zgłoszenia</a>
+    </li>
+}

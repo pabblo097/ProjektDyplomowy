@@ -1,0 +1,31 @@
+﻿@model Report
+@{
+    ViewData["Title"] = "Zgłoś";
+}
+
+<div class="d-flex flex-column align-items-center">
+    <h1 class="text-center text-success">Zapoznaj się z ponizszymi wytycznymi!</h1>
+    <h3 class="text-center mb-3">Zgłoś post tylko wtedy gdy zawiera <span class="text-decoration-underline">przynajmniej</span> jedno z poniższych:</h3>
+    <ul>
+        <li><h5>Treści o charakterze seksualnym</h5></li>
+        <li><h5>Treści przedstawiające przemoc lub budzące odrazę</h5></li>
+        <li><h5>Treści krzywdzące lub szerzące nienawiść</h5></li>
+        <li><h5>Nękanie lub dokuczanie</h5></li>
+        <li><h5>Wykorzystywanie dzieci</h5></li>
+        <li><h5>Propagowanie terroryzmu</h5></li>
+        <li><h5>Spam lub treści wprowadzające w błąd</h5></li>
+    </ul>
+
+    <form asp-controller="Reports" asp-action="Add" method="post">
+        <div class="mb-3">
+            <recaptcha />
+            <span class="text-danger">@Html.ValidationMessage("Captcha")</span>
+        </div>
+        <div class="d-flex justify-content-around gap-5">
+            <a href="@ViewBag.returnUrl"
+               class="btn btn-secondary px-4 py-2">Anuluj</a>
+            <input type="hidden" asp-for="PostId" />
+            <button type="submit" class="btn btn-danger px-4 py-2">Zgłoś</button>
+        </div>
+    </form>
+</div>

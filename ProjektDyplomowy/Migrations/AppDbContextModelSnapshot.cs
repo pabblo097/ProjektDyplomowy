@@ -272,6 +272,26 @@ namespace ProjektDyplomowy.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("ProjektDyplomowy.Entities.Report", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ReportCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("ProjektDyplomowy.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")

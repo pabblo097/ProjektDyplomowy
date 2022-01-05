@@ -1,0 +1,104 @@
+﻿@model PagedReportsViewModel
+@{
+    ViewData["Title"] = "Zarządaj zgłoszeniami";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["SuccessAlert"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessAlert"]
+    </div>
+}
+
+<div class="d-flex gap-2 my-3">
+    @if (Model.ReportStatus == ReportStatus.Oczekujący)
+    {
+        <a asp-controller="Reports" asp-action="Manage" asp-route-reportStatus="0"
+           class="btn btn-primary">Oczekujące</a>
+    }
+    else
+    {
+        <a asp-controller="Reports" asp-action="Manage" asp-route-reportStatus="0"
+           class="btn btn-outline-primary">Oczekujące</a>
+    }
+
+    @if (Model.ReportStatus == ReportStatus.Zatwierdzony)
+    {
+        <a asp-controller="Reports" asp-action="Manage" asp-route-reportStatus="2"
+           class="btn btn-primary">Zatwierdzone</a>
+    }
+    else
+    {
+        <a asp-controller="Reports" asp-action="Manage" asp-route-reportStatus="2"
+           class="btn btn-outline-primary">Zatwierdzone</a>
+    }
+
+    @if (Model.ReportStatus == ReportStatus.Odrzucony)
+    {
+        <a asp-controller="Reports" asp-action="Manage" asp-route-reportStatus="1"
+           class="btn btn-primary">Odrzucone</a>
+    }
+    else
+    {
+        <a asp-controller="Reports" asp-action="Manage" asp-route-reportStatus="1"
+           class="btn btn-outline-primary">Odrzucone</a>
+    }
+</div>
+
+@if (Model.Reports.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id zgłoszenia</th>
+                <th scope="col">Id postu</th>
+                <th scope="col">Liczba zgłoszeń</th>
+                <th scope="col">Opcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in Model.Reports)
+            {
+                <tr>
+                    <td>@report.Id</td>
+                    <td>@report.PostId</td>
+                    <td>@report.ReportCount</td>
+                    <td class="d-flex gap-2 flex-wrap">
+                        <a class="btn btn-primary flex-grow-1" asp-controller="Posts" asp-action="Details" asp-route-postId="@report.PostId" target="_blank">Podgląd</a>
+
+                        @if (Model.ReportStatus == ReportStatus.Oczekujący)
+                        {
+                            <form asp-controller="Reports" asp-action="Reject" asp-route-reportId="@report.Id" method="post">
+                                <button type="submit" class="btn btn-danger flex-grow-1">Odrzuć</button>
+                            </form>
+
+                            <form asp-controller="Reports" asp-action="Approve" asp-route-reportId="@report.Id" method="post">
+                                <button type="submit" class="btn btn-success flex-grow-1">Zatwierdź i usuń post</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <paging total-records="Model.AllItemsCount" page-no="Model.CurrentPage"
+            page-size="@Model.PageSize" show-page-size-nav="false"
+            show-total-pages="false" show-total-records="false"
+            query-string-key-page-no="page" max-displayed-pages="5"
+            text-previous='<i class="fas fa-angle-double-left"></i>'
+            text-next='<i class="fas fa-angle-double-right"></i>'
+            render-mode="Bootstrap5" show-first-last="false"
+            class-page-link="bg-dark text-success border-secondary"
+            class-disabled-jumping-button="bg-dark text-secondary border-secondary"
+            class-active-page="bg-success text-dark"
+            class-paging-control="pagination justify-content-center">
+    </paging>
+}
+else
+{
+    <h3 class="text-center my-5">Brak zgłoszeń do wyswietlenia.</h3>
+}
+

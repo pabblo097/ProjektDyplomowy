@@ -1,8 +1,5 @@
 ﻿@model PostsDetailsViewModel
 
-@using Microsoft.AspNetCore.Identity
-@using ProjektDyplomowy.Entities
-
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
@@ -57,19 +54,6 @@
                                 </div>
                             }
 
-                            @* zgłoś *@
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle border-0 drop-down-noarrow shadow-none"
-                                        type="button" id="reportDropdownBtn" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    <i class="fab fa-font-awesome-flag"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="reportDropdownBtn">
-                                    <li><a class="dropdown-item" href="#">Zgłoś</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">Jeszcze nwm</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">co tu bedzie</a></li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,9 +125,15 @@
                                 <span>@Model.LikesQuantity</span>
                             </button>
                         }
-                        <a id="add" class="btn btn-primary py-2 px-4" href="#">
+
+                        <a class="btn btn-primary py-2 px-4" href="#">
                             <span class="me-2"><i class="fas fa-share-alt"></i></span>
                             Udostępnij
+                        </a>
+
+                        <a class="btn btn-primary py-2 px-4" asp-controller="Reports" asp-action="Add" asp-route-postId="@Model.Id" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
+                            <span class="me-2"><i class="fab fa-font-awesome-flag"></i></span>
+                            Zgłoś post
                         </a>
                     </div>
 

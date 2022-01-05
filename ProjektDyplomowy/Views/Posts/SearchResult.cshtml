@@ -1,11 +1,10 @@
 ﻿@model PagedPostsSearchViewModel
 
-@using ProjektDyplomowy.Entities
-@using Microsoft.AspNetCore.Identity
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
 @{
+    ViewData["Title"] = "Szukaj";
 }
 
 <form action="SearchResult" method="get">
@@ -121,6 +120,11 @@
                             <a id="add" class="btn btn-primary py-2 px-4" href="#">
                                 <span class="me-2"><i class="fas fa-share-alt"></i></span>
                                 Udostępnij
+                            </a>
+
+                            <a class="btn btn-primary py-2 px-4" asp-controller="Reports" asp-action="Add" asp-route-postId="@post.Id" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
+                                <span class="me-2"><i class="fab fa-font-awesome-flag"></i></span>
+                                Zgłoś post
                             </a>
                         </div>
                     </div>
