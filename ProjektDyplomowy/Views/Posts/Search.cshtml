@@ -1,0 +1,33 @@
+﻿@using ProjektDyplomowy.Entities
+@{
+}
+
+<form action="SearchResult" method="get">
+    <div class="row mb-5">
+        <div class="form-group col-12 col-lg-8 col-xl-6 offset-xl-1 mb-3 mb-lg-0">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="searchTerm" placeholder="Wpisz wyszukiwaną frazę" name="searchTerm" required />
+                <label for="searchTerm">Szukaj</label>
+            </div>
+        </div>
+        <div class="form-group col-10 col-lg-3">
+            <div class="form-floating">
+                <select class="form-select" id="searchType" name="searchType" asp-items="@Html.GetEnumSelectList<SearchType>()"></select>
+                <label for="searchType">Sposób wyszukiwania</label>
+            </div>
+        </div>
+        <div class="form-group col-2 col-lg-1 d-flex flex-row">
+            <button type="submit" class="btn btn-primary">Szukaj</button>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex flex-column align-items-center">
+    <h2>Wyszukaj interesujące Cię treści.</h2>
+    <h4>Sposób wyszukiwania:</h4>
+    <ul>
+        <li>Wszystko: wpisana fraza jest wyszukiwana zarówno w tytułach postów jak i ich tagach</li>
+        <li>Tytuły: wpisana fraza jest wyszukiwana tylko w tytułach</li>
+        <li>Tagi: wpisana fraza jest wyszukiwana tylko w tagach</li>
+    </ul>
+</div>

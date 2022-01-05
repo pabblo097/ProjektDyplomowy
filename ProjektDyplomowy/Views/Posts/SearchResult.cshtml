@@ -1,0 +1,168 @@
+﻿@model PagedPostsSearchViewModel
+
+@using ProjektDyplomowy.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+}
+
+<form action="SearchResult" method="get">
+    <div class="row mb-5 mb-lg-4">
+        <div class="form-group col-12 col-lg-8 col-xl-6 offset-xl-1 mb-3 mb-lg-0">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="searchTerm" placeholder="Wpisz wyszukiwaną frazę" asp-for="SearchTerm" required />
+                <label asp-for="SearchTerm">Szukaj</label>
+            </div>
+        </div>
+        <div class="form-group col-10 col-lg-3">
+            <div class="form-floating">
+                <select class="form-select" id="searchType" asp-for="SearchType" asp-items="@Html.GetEnumSelectList<SearchType>()"></select>
+                <label asp-for="SearchType"></label>
+            </div>
+        </div>
+        <div class="form-group col-2 col-lg-1 d-flex flex-row">
+            <button type="submit" class="btn btn-primary">Szukaj</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Posts.Any())
+{
+    <div class="row">
+        <div class="col-12 col-lg-8 col-xl-7 offset-xl-1">
+
+            <h2 class="mb-4">Wyniki wyszukiwania - @Model.AllItemsCount</h2>
+
+            @foreach (var post in Model.Posts)
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        @*todo link do uzytkownika*@
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <a href="#">@post.Username</a>
+                            <span>Dodano: @TimeHelpers.HowMuchTimePassed(post.CreationDate) temu</span>
+                        </div>
+                    </div>
+                    <div class="card-body pt-2">
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <span><a asp-controller="Posts" asp-action="Categories" asp-route-category="@post.CategoryName">@post.CategoryName</a></span>
+                            @if (post.Tags != null)
+                            {
+                                <div>
+                                    @foreach (var tag in post.Tags)
+                                    {
+                                        <span class="badge bg-light text-dark">#@tag.Name</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <a class="text-white" asp-controller="Posts" asp-action="Details" asp-route-postId="@post.Id">
+                            <h3 class="my-3">@post.Title</h3>
+                        </a>
+                        @if (!string.IsNullOrWhiteSpace(post.Text))
+                        {
+                            <p>@post.Text</p>
+
+                        }
+
+                        @if (post.ContentType == ContentType.Video)
+                        {
+                            if (post.SourceType == SourceType.Local)
+                            {
+                                <video class="w-100" src="~/uploads/@post.FileName" controls></video>
+                            }
+                            else
+                            {
+                                <iframe src="@post.FileName" class="w-100" allowfullscreen></iframe>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-controller="Posts" asp-action="Details" asp-route-postId="@post.Id">
+                                @if (post.SourceType == SourceType.Local)
+                                {
+                                    <img src="~/uploads/@post.FileName" class="img-fluid w-100" />
+                                }
+                                else
+                                {
+                                    <img src="@post.FileName" class="img-fluid w-100" />
+                                }
+                            </a>
+                        }
+
+                        <div class="d-flex justify-content-start gap-3 my-3">
+                            <input type="hidden" asp-for="@post.Id" />
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                @if (post.UsersWhoLikePost.Contains(UserManager.GetUserId(User)))
+                                {
+                                    <button class="btn btn-success py-2 px-4 likePostBtn likePostBtn-active">
+                                        <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                        <span>@post.LikesQuantity</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary py-2 px-4 likePostBtn">
+                                        <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                        <span>@post.LikesQuantity</span>
+                                    </button>
+                                }
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary py-2 px-4" disabled>
+                                    <span class="me-2"><i class="fas fa-thumbs-up"></i></span>
+                                    <span>@post.LikesQuantity</span>
+                                </button>
+                            }
+                            <a id="add" class="btn btn-primary py-2 px-4" href="#">
+                                <span class="me-2"><i class="fas fa-share-alt"></i></span>
+                                Udostępnij
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.CurrentPage != (int)Math.Ceiling(Decimal.Divide(Model.AllItemsCount, Model.PageSize)))
+            {
+                <a href="SearchResult?searchTerm=@Model.SearchTerm&searchType=@((int)Model.SearchType)&page=@(Model.CurrentPage+1)"
+                   class="btn btn-outline-success w-100 mb-4 p-3 fs-3">Następna strona</a>
+            }
+
+            <paging total-records="Model.AllItemsCount" page-no="Model.CurrentPage"
+                    page-size="@Model.PageSize" show-page-size-nav="false"
+                    show-total-pages="false" show-total-records="false"
+                    query-string-key-page-no="page" max-displayed-pages="5"
+                    text-previous='<i class="fas fa-angle-double-left"></i>'
+                    text-next='<i class="fas fa-angle-double-right"></i>'
+                    render-mode="Bootstrap5" show-first-last="false"
+                    class-page-link="bg-dark text-success border-secondary"
+                    class-disabled-jumping-button="bg-dark text-secondary border-secondary"
+                    class-active-page="bg-success text-dark"
+                    class-paging-control="pagination justify-content-center">
+            </paging>
+        </div>
+        <div class="col-lg-4 col-xl-3 bg-black d-flex flex-column justify-content-center align-items-center position-sticky"
+             style="height:600px; top: 1.5rem">
+            <aside>
+                <h3>Reklama</h3>
+            </aside>
+        </div>
+    </div>
+}
+else
+{
+    <h1>Nic nie znaleziono</h1>
+}
+
+
+
+@section Scripts{
+    <script src="~/js/updateIFrameHeight.js"></script>
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script src="~/js/indexPostsLikesHandler.js"></script>
+}

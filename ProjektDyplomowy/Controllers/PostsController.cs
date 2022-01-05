@@ -219,5 +219,16 @@ namespace ProjektDyplomowy.Controllers
 
             return View(pagedPosts);
         }
+
+        [Route("Search")]
+        public IActionResult Search() { return View(); }
+
+        [Route("SearchResult")]
+        public async Task<IActionResult> SearchResult(string searchTerm, SearchType searchType, int page = 1)
+        {
+            var pagedPosts = await postsRepository.SearchPostsAsync(searchTerm, searchType, page);
+
+            return View(pagedPosts);
+        }
     }
 }

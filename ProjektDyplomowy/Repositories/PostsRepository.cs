@@ -130,43 +130,43 @@ namespace ProjektDyplomowy.Repositories
             return base.RemoveAsync(entity);
         }
 
-        //public async Task<PagedPostsSearchViewModel> SearchPostsAsync(string searchTerm, SearchType searchType, int page = 1)
-        //{
-        //    IQueryable<Post> posts = context.Posts
-        //        .Include(u => u.User)
-        //        .Include(t => t.Tags)
-        //        .Include(c => c.Category)
-        //        .Include(ul => ul.UsersWhoLikePost);
+        public async Task<PagedPostsSearchViewModel> SearchPostsAsync(string searchTerm, SearchType searchType, int page = 1)
+        {
+            IQueryable<Post> posts = context.Posts
+                .Include(u => u.User)
+                .Include(t => t.Tags)
+                .Include(c => c.Category)
+                .Include(ul => ul.UsersWhoLikePost);
 
-        //    if (searchType == SearchType.Tytuły)
-        //    {
-        //        posts = posts.Where(p => p.Title.Contains(searchTerm));
-        //    }
-        //    else if (searchType == SearchType.Tagi)
-        //    {
-        //        posts = posts.Where(p => p.Tags.Any(t => t.Name == searchTerm));
-        //    }
-        //    else if (searchType == SearchType.Wszystko)
-        //    {
-        //        posts = posts.Where(p => p.Title.Contains(searchTerm) || p.Tags.Any(t => t.Name == searchTerm));
-        //    }
+            if (searchType == SearchType.Tytuły)
+            {
+                posts = posts.Where(p => p.Title.Contains(searchTerm));
+            }
+            else if (searchType == SearchType.Tagi)
+            {
+                posts = posts.Where(p => p.Tags.Any(t => t.Name == searchTerm));
+            }
+            else if (searchType == SearchType.Wszystko)
+            {
+                posts = posts.Where(p => p.Title.Contains(searchTerm) || p.Tags.Any(t => t.Name == searchTerm));
+            }
 
-        //    int size = 10;
-        //    int skip = (page - 1) * size;
-        //    int count = await posts.CountAsync();
-        //    posts = posts.Skip(skip).Take(size);
+            int size = 10;
+            int skip = (page - 1) * size;
+            int count = await posts.CountAsync();
+            posts = posts.Skip(skip).Take(size);
 
-        //    var pagedPosts = new PagedPostsSearchViewModel
-        //    {
-        //        Posts = mapper.Map<List<PostsIndexViewModel>>(await posts.ToListAsync()),
-        //        CurrentPage = page,
-        //        PageSize = size,
-        //        AllItemsCount = count,
-        //        SearchTerm = searchTerm,
-        //        SearchType = searchType
-        //    };
+            var pagedPosts = new PagedPostsSearchViewModel
+            {
+                Posts = mapper.Map<List<PostsIndexViewModel>>(await posts.ToListAsync()),
+                CurrentPage = page,
+                PageSize = size,
+                AllItemsCount = count,
+                SearchTerm = searchTerm,
+                SearchType = searchType
+            };
 
-        //    return pagedPosts;
-        //}
+            return pagedPosts;
+        }
     }
 }
