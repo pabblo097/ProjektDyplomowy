@@ -61,29 +61,6 @@ connection.on("ReceiveComment", function (isSucceed, errorMessage, newComment) {
                             </li>
                         </ul>
                     </div>
-
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle border-0
-                        drop-down-noarrow shadow-none py-1"
-                                type="button" id="reportDropdownBtn"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                            <i class="fab fa-font-awesome-flag"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="reportDropdownBtn">
-                            <li><a class="dropdown-item" href="#">Zgłoś</a></li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="#">
-                                    Jeszcze nwm
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="#">
-                                    co tu bedzie
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
             </div>
             
                 <button class="btn btn-primary py-1 border-0 likesBtn">

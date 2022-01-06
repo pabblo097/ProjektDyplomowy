@@ -1,7 +1,9 @@
 using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ProjektDyplomowy.DAL;
+using ProjektDyplomowy.EmailSender;
 using ProjektDyplomowy.Entities;
 using ProjektDyplomowy.Hubs;
 using ProjektDyplomowy.Repositories;
@@ -20,7 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ASP.NET Core Identity Config
 builder.Services.AddDefaultIdentity<User>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireNonAlphanumeric = false;
     options.User.RequireUniqueEmail = true;
 })
@@ -36,6 +38,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddSignalR();
 builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
+
+builder.Services.AddTransient<IEmailSender, SendGridSender>();
+builder.Services.Configure<SendGridSenderOption>(builder.Configuration);
 
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IPostsRepository, PostsRepository>();

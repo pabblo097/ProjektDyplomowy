@@ -46,8 +46,8 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Pole email jest wymagane.")]
+            [EmailAddress(ErrorMessage = "To nie jest poprawny adres email.")]
             public string Email { get; set; }
         }
 

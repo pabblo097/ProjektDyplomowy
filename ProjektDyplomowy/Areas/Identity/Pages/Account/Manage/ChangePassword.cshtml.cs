@@ -53,19 +53,19 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Pole obecne hasło jest wymagane.")]
             [DataType(DataType.Password)]
-            [Display(Name = "Current password")]
+            [Display(Name = "Obecne hasło")]
             public string OldPassword { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Pole nowe hasło jest wymagane.")]
+            [StringLength(100, ErrorMessage = "Długość hasła musi zawierać się w przedziale od {2} do {1} znaków.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "New password")]
+            [Display(Name = "Nowe hasło")]
             public string NewPassword { get; set; }
 
             /// <summary>
@@ -73,8 +73,8 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm new password")]
-            [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+            [Display(Name = "Potwierdź nowe hasło")]
+            [Compare("NewPassword", ErrorMessage = "Nowe hasło i hasło potwierdzające są różne.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -83,7 +83,7 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Nie udało się znaleść użytkownika z ID '{_userManager.GetUserId(User)}'.");
             }
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
@@ -105,7 +105,7 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Nie udało się znaleść użytkownika z ID '{_userManager.GetUserId(User)}'.");
             }
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
@@ -120,7 +120,7 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "Twoje hasło zostało zmienione.";
 
             return RedirectToPage();
         }

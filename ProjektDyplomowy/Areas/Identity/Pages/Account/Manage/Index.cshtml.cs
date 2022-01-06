@@ -30,6 +30,7 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        [Display(Name = "Nazwa użytkownika")]
         public string Username { get; set; }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Nie udało się znaleść użytkownika z ID '{_userManager.GetUserId(User)}'.");
             }
 
             await LoadAsync(user);
@@ -91,7 +92,7 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Nie udało się znaleść użytkownika z ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -106,13 +107,13 @@ namespace ProjektDyplomowy.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Natrafiono na niespodziewany błąd podczas próby ustawienia numeru telefonu.";
                     return RedirectToPage();
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Twój profil został zaktualizowany.";
             return RedirectToPage();
         }
     }
