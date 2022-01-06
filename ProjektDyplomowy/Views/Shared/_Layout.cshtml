@@ -11,10 +11,17 @@
     <link rel="stylesheet" href="~/ProjektDyplomowy.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
+    <div class="text-center py-5 w-100 d-none d-lg-block" id="logoHeader">
+        <a asp-controller="Posts" asp-action="Index">
+            <img src="~/imgs/logov2.png" alt="Logo" class="img-fluid" />
+        </a>
+    </div>
+    <header class="sticky-top">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
             <div class="container">
-                <a class="navbar-brand" asp-controller="Posts" asp-action="Index">Navbar</a>
+                <a class="navbar-brand d-block d-lg-none" asp-controller="Posts" asp-action="Index">
+                    <img src="~/imgs/logov2.png" alt="Logo" height="40" />
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -41,12 +48,13 @@
 
     <footer class="footer bg-dark">
         <div class="container">
-            &copy; 2021 - ProjektDyplomowy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - 2022 &bull; Webgates
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/35cbf2d03a.js" crossorigin="anonymous"></script>
+    <script src="~/js/logoHandler.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/site.js" asp-append-version="true"></script>
 </body>

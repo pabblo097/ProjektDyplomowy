@@ -7,8 +7,8 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="row">
-    <div class="col-12 col-lg-8 col-xl-7 offset-xl-1">
+<div class="row justify-content-around">
+    <div class="col-12 col-lg-8 col-xl-7 offset-xl-1 mb-3">
         @if (TempData["SuccessAlert"] != null)
         {
             <div class="alert alert-success">
@@ -28,7 +28,15 @@
                 <div class="card-header">
                     @*todo link do uzytkownika*@
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <a href="#">@Model.Username</a>
+                        @if (Model.Username != null)
+                        {
+                            <span>@Model.Username</span>
+                        }
+                        else
+                        {
+                            <span>[Użytkownik nieistnieje]</span>
+                        }
+
                         <div class="d-flex align-items-center gap-2">
                             <span>Dodano: @TimeHelpers.HowMuchTimePassed(Model.CreationDate) temu</span>
 
@@ -133,7 +141,7 @@
 
                         <a class="btn btn-primary py-2 px-4" asp-controller="Reports" asp-action="Add" asp-route-postId="@Model.Id" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
                             <span class="me-2"><i class="fab fa-font-awesome-flag"></i></span>
-                            Zgłoś post
+                            Zgłoś
                         </a>
                     </div>
 
@@ -201,7 +209,14 @@
                                 <div class="card my-3">
                                     <div class="card-body bg-secondary p-2">
                                         <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2 flex-wrap">
-                                            <a href="#">@comment.Username</a>
+                                            @if (comment.Username != null)
+                                            {
+                                                <span>@comment.Username</span>
+                                            }
+                                            else
+                                            {
+                                                <span>[Użytkownik nieistnieje]</span>
+                                            }
                                             <div class="d-flex gap-3 align-items-center justify-content-between">
                                                 Dodano: @TimeHelpers.HowMuchTimePassed(comment.CreationDate) temu
 
@@ -300,12 +315,7 @@
             </div>
         </article>
     </div>
-    <div class="col-12 col-lg-4 col-xl-3 bg-black d-flex flex-column justify-content-center align-items-center position-sticky"
-         style="height:600px; top: 1.5rem">
-        <aside>
-            <h3>Reklama</h3>
-        </aside>
-    </div>
+    <partial name="_AdPartial" />
 </div>
 
 
